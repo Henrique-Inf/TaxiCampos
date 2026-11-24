@@ -58,6 +58,24 @@
 
   var apoiadores = (dados.apoiadores || []).filter(function (a) { return a && a.nome; });
 
+  // Agrupa os pontos por região, na ordem de dados.regioes; sem região vai para o fim
+  function agruparPorRegiao(lista) {
+    var ordem = (dados.regioes || []).slice();
+    var grupos = {};
+    lista.forEach(function (p) {
+      var r = regiaoDe(p);
+      (grupos[r] = grupos[r] || []).push(p);
+      if (r && ordem.indexOf(r) === -1) ordem.push(r);
+    });
+    var saida = ordem.filter(function (r) { return grupos[r]; })
+      .map(function (r) { return { nome: r, pontos: grupos[r] }; });
+    if (grupos[""]) saida.push({ nome: "", pontos: grupos[""] });
+    return saida;
+  }
+
+  var temRegioes = pontos.some(function (p) { return regiaoDe(p); });
+  var regiaoAtiva = null; // null = todas
+
   var totalTaxistas = pontos.reduce(function (s, p) { return s + (p.taxistas || []).length; }, 0);
 
   /* ---------- ícones ---------- */
@@ -68,17 +86,22 @@
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>';
   var ICONE_SETA =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var ICONE_PINO =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
   var ICONE_BUSCA =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21"/></svg>';
 
   /* ---------- componentes ---------- */
 
-  function cartaoPonto(ponto) {
+  function regiaoDe(ponto) { return String(ponto.regiao || "").trim(); }
+
+  function cartaoPonto(ponto, mostrarRegiao) {
     var qtd = (ponto.taxistas || []).length;
+    var regiao = mostrarRegiao ? regiaoDe(ponto) : "";
     return (
       '<a class="ponto" href="#/ponto/' + encodeURIComponent(ponto.id) + '">' +
         '<span class="ponto__numero" aria-hidden="true">' + esc(ponto.numero) + "</span>" +
-        '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + "</span>" +
+        '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + (regiao ? " · " + esc(regiao) : "") + "</span>" +
         "<div>" +
           '<h3 class="ponto__nome">' + esc(nomeCurto(ponto)) + "</h3>" +
           '<div class="ponto__rodape">' +
@@ -212,8 +235,8 @@
           '<h2 class="display secao__titulo"><span class="rotulo">Escolha o mais perto</span>Pontos de <span class="amarelo">táxi</span></h2>' +
           '<div class="busca">' +
             ICONE_BUSCA +
-            '<label for="busca" class="sr-only">Buscar ponto, taxista ou carro</label>' +
-            '<input id="busca" type="search" placeholder="Buscar ponto, taxista ou carro" autocomplete="off">' +
+            '<label for="busca" class="sr-only">Buscar ponto, bairro, taxista ou carro</label>' +
+            '<input id="busca" type="search" placeholder="Buscar ponto, bairro ou taxista" autocomplete="off">' +
           "</div>" +
         "</div>" +
         '<div id="resultados"></div>' +
@@ -242,14 +265,36 @@
       var q = normalizar(campo.value.trim());
 
       if (!q) {
-        resultados.innerHTML = pontos.length
-          ? '<div class="grade-pontos">' + pontos.map(cartaoPonto).join("") + "</div>"
-          : '<p class="vazio">Nenhum ponto cadastrado ainda.</p>';
+        if (!pontos.length) {
+          resultados.innerHTML = '<p class="vazio">Nenhum ponto cadastrado ainda.</p>';
+        } else if (!temRegioes) {
+          resultados.innerHTML = '<div class="grade-pontos">' +
+            pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>";
+        } else {
+          var grupos = agruparPorRegiao(pontos);
+          var chave = function (g) { return g.nome || "outros"; };
+          var filtros = '<div class="filtros" role="group" aria-label="Filtrar por região">' +
+            '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva === null) + '">Todas</button>' +
+            grupos.map(function (g) {
+              return '<button type="button" class="filtro" data-regiao="' + esc(chave(g)) + '" aria-pressed="' +
+                (regiaoAtiva === chave(g)) + '">' + esc(g.nome || "Outros") + "<span>" + g.pontos.length + "</span></button>";
+            }).join("") +
+          "</div>";
+          resultados.innerHTML = filtros + grupos
+            .filter(function (g) { return regiaoAtiva === null || regiaoAtiva === chave(g); })
+            .map(function (g) {
+              return '<div class="regiao">' +
+                '<h3 class="regiao__titulo">' + ICONE_PINO + "<span>" + esc(g.nome || "Outros pontos") + "</span>" +
+                  '<small>' + plural(g.pontos.length, "ponto", "pontos") + "</small></h3>" +
+                '<div class="grade-pontos">' + g.pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>" +
+              "</div>";
+            }).join("");
+        }
         return;
       }
 
       var pontosAchados = pontos.filter(function (p) {
-        return normalizar(p.nome + " " + p.numero + " " + (p.endereco || "")).indexOf(q) !== -1;
+        return normalizar(p.nome + " " + p.numero + " " + (p.endereco || "") + " " + regiaoDe(p)).indexOf(q) !== -1;
       });
 
       var taxistasAchados = [];
@@ -262,7 +307,7 @@
       var html = "";
       if (pontosAchados.length) {
         html += '<p class="subtitulo-lista">Pontos</p><div class="grade-pontos">' +
-          pontosAchados.map(cartaoPonto).join("") + "</div>";
+          pontosAchados.map(function (p) { return cartaoPonto(p, true); }).join("") + "</div>";
       }
       if (taxistasAchados.length) {
         html += '<p class="subtitulo-lista">' + plural(taxistasAchados.length, "taxista", "taxistas") + '</p><div class="grade-taxistas">' +
@@ -272,6 +317,13 @@
     }
 
     campo.addEventListener("input", render);
+    resultados.addEventListener("click", function (e) {
+      var botao = e.target.closest(".filtro");
+      if (!botao) return;
+      var r = botao.getAttribute("data-regiao");
+      regiaoAtiva = r ? r : null;
+      render();
+    });
     render();
   }
 
@@ -292,7 +344,9 @@
     app.innerHTML =
       '<section class="topo-ponto">' +
         '<a class="voltar" href="#/" data-rolar="pontos">' + ICONE_SETA + "Todos os pontos</a>" +
-        '<p class="topo-ponto__rotulo">Ponto <b>' + esc(ponto.numero) + "</b></p>" +
+        '<p class="topo-ponto__rotulo">Ponto <b>' + esc(ponto.numero) + "</b>" +
+          (regiaoDe(ponto) ? '<span class="topo-ponto__regiao">' + ICONE_PINO + esc(regiaoDe(ponto)) + "</span>" : "") +
+        "</p>" +
         '<h1 class="display topo-ponto__nome">' + esc(nomeCurto(ponto)) + "</h1>" +
         '<div class="topo-ponto__info">' +
           "<span><strong>" + plural(taxistas.length, "taxista", "taxistas") + "</strong></span>" +

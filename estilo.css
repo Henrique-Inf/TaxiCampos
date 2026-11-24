@@ -334,6 +334,78 @@ img { max-width: 100%; }
 }
 
 /* =========================================================
+   Regiões (filtros e grupos)
+   ========================================================= */
+
+.filtros {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(26px, 4vw, 40px);
+}
+.filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--linha);
+  background: var(--carvao);
+  color: var(--creme);
+  font: 700 .95rem var(--texto);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.filtro span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(247, 240, 225, .1);
+  font-size: .75rem;
+}
+.filtro:hover { border-color: var(--amarelo); }
+.filtro[aria-pressed="true"] { background: var(--amarelo); border-color: var(--amarelo); color: var(--noite); }
+.filtro[aria-pressed="true"] span { background: rgba(14, 13, 11, .15); }
+
+.regiao + .regiao { margin-top: clamp(44px, 6vw, 72px); }
+.regiao__titulo {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--linha);
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  line-height: .9;
+  text-transform: uppercase;
+}
+.regiao__titulo svg { width: .55em; height: .55em; color: var(--amarelo); align-self: center; flex: none; }
+.regiao__titulo small {
+  font-family: var(--texto);
+  font-size: .9rem;
+  font-weight: 500;
+  text-transform: none;
+  color: var(--creme-fraco);
+}
+
+.topo-ponto__regiao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  letter-spacing: .1em;
+  color: var(--creme);
+}
+.topo-ponto__regiao svg { width: 16px; height: 16px; color: var(--amarelo); }
+
+/* =========================================================
    Cartões de ponto
    ========================================================= */
 

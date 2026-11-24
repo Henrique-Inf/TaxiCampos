@@ -6,6 +6,7 @@
  * Cada ponto tem:
  *   id        → identificador único, sem espaços nem acentos (usado no link)
  *   numero    → número do ponto (ex.: "12")
+ *   regiao    → bairro/região do ponto (ex.: "Capivari"); os pontos são agrupados por região
  *   nome      → nome do ponto
  *   endereco  → (opcional) endereço ou referência
  *   telefone  → (opcional) telefone fixo do ponto
@@ -38,6 +39,9 @@
 window.TAXI_DADOS = {
   cidade: "Campos do Jordão",
   dddPadrao: "12",
+  // Ordem em que as regiões aparecem no site (regiões fora desta lista vêm depois)
+  regioes: ["Abernéssia", "Jaguaribe", "Capivari"],
+
   mensagemWhatsapp:
     "Olá, {nome}! Peguei seu contato no TaxiCampos ({ponto}) e gostaria de solicitar uma corrida.",
 
@@ -45,6 +49,7 @@ window.TAXI_DADOS = {
     {
       "id": "avenida",
       "numero": "01",
+      "regiao": "",
       "nome": "Ponto Avenida",
       "endereco": "",
       "telefone": "",
@@ -96,6 +101,7 @@ window.TAXI_DADOS = {
     {
       "id": "capivari",
       "numero": "02",
+      "regiao": "",
       "nome": "Ponto Capivari",
       "endereco": "",
       "telefone": "",
@@ -249,6 +255,7 @@ window.TAXI_DADOS = {
     {
       "id": "elite",
       "numero": "03",
+      "regiao": "",
       "nome": "Ponto Elite",
       "endereco": "",
       "telefone": "",
@@ -276,6 +283,7 @@ window.TAXI_DADOS = {
     {
       "id": "jaguaribe",
       "numero": "04",
+      "regiao": "",
       "nome": "Ponto Jaguaribe",
       "endereco": "",
       "telefone": "",
@@ -321,6 +329,7 @@ window.TAXI_DADOS = {
     {
       "id": "jordanense",
       "numero": "05",
+      "regiao": "",
       "nome": "Ponto Jordanense",
       "endereco": "",
       "telefone": "",
@@ -378,6 +387,7 @@ window.TAXI_DADOS = {
     {
       "id": "novo",
       "numero": "06",
+      "regiao": "",
       "nome": "Ponto Novo",
       "endereco": "",
       "telefone": "",
@@ -423,6 +433,7 @@ window.TAXI_DADOS = {
     {
       "id": "pao-de-acucar",
       "numero": "07",
+      "regiao": "",
       "nome": "Ponto Pão de Açúcar",
       "endereco": "",
       "telefone": "",
@@ -450,6 +461,7 @@ window.TAXI_DADOS = {
     {
       "id": "piratininga",
       "numero": "08",
+      "regiao": "",
       "nome": "Ponto Piratininga",
       "endereco": "",
       "telefone": "",
@@ -483,6 +495,7 @@ window.TAXI_DADOS = {
     {
       "id": "rodoviaria",
       "numero": "09",
+      "regiao": "",
       "nome": "Ponto Rodoviária",
       "endereco": "",
       "telefone": "",
