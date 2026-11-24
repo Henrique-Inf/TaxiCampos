@@ -528,5 +528,12 @@ window.TAXI_DADOS = {
   ],
 
   // Apoiadores: aparecem na página "Apoiadores" e no rodapé do site.
-  apoiadores: []
+  apoiadores: [
+    {
+      nome: "GWG Telecom",
+      logo: "apoiadores/gwg-telecom.png",
+      descricao: "Provedor de internet em Campos do Jordão",
+      site: "https://gwgtelecom.com.br/"
+    }
+  ]
 };
