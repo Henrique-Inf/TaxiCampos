@@ -254,60 +254,11 @@ window.TAXI_DADOS = {
       ]
     },
     {
-      "id": "jaguaribe",
-      "numero": "06",
-      "regiao": "Jaguaribe",
-      "nome": "Ponto Jaguaribe",
-      "endereco": "Av. Dr. Januário Miraglia, 2765 - Jaguaribe",
-      "telefone": "",
-      "mapa": "",
-      "lat": "-22.7293694",
-      "lng": "-45.5823852",
-      "taxistas": [
-        {
-          "nome": "Caio Lúcio",
-          "carro": "",
-          "telefone": "(12) 99766-7846",
-          "foto": ""
-        },
-        {
-          "nome": "Danilo Quintanilha",
-          "carro": "",
-          "telefone": "(12) 99623-8237",
-          "foto": ""
-        },
-        {
-          "nome": "Eleno Martini",
-          "carro": "",
-          "telefone": "(12) 99774-4510",
-          "foto": ""
-        },
-        {
-          "nome": "Matheus Martini",
-          "carro": "",
-          "telefone": "(12) 99662-9193",
-          "foto": ""
-        },
-        {
-          "nome": "Valdeci Donizeti",
-          "carro": "",
-          "telefone": "(12) 99717-7103",
-          "foto": ""
-        },
-        {
-          "nome": "Délcio",
-          "carro": "",
-          "telefone": "(12) 99770-3803",
-          "foto": ""
-        }
-      ]
-    },
-    {
       "id": "jordanense",
-      "numero": "07",
-      "regiao": "Jaguaribe",
+      "numero": "06",
+      "regiao": "Abernéssia",
       "nome": "Ponto Jordanense",
-      "endereco": "Av. Dr. Januário Miraglia, 836",
+      "endereco": "Av. Dr. Januário Miraglia, 836 - Abernéssia",
       "telefone": "",
       "mapa": "",
       "lat": "-22.7416045",
@@ -359,6 +310,55 @@ window.TAXI_DADOS = {
           "nome": "Roque Martini",
           "carro": "",
           "telefone": "(12) 99739-5972",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "jaguaribe",
+      "numero": "07",
+      "regiao": "Jaguaribe",
+      "nome": "Ponto Jaguaribe",
+      "endereco": "Av. Dr. Januário Miraglia, 2765 - Jaguaribe",
+      "telefone": "",
+      "mapa": "",
+      "lat": "-22.7293694",
+      "lng": "-45.5823852",
+      "taxistas": [
+        {
+          "nome": "Caio Lúcio",
+          "carro": "",
+          "telefone": "(12) 99766-7846",
+          "foto": ""
+        },
+        {
+          "nome": "Danilo Quintanilha",
+          "carro": "",
+          "telefone": "(12) 99623-8237",
+          "foto": ""
+        },
+        {
+          "nome": "Eleno Martini",
+          "carro": "",
+          "telefone": "(12) 99774-4510",
+          "foto": ""
+        },
+        {
+          "nome": "Matheus Martini",
+          "carro": "",
+          "telefone": "(12) 99662-9193",
+          "foto": ""
+        },
+        {
+          "nome": "Valdeci Donizeti",
+          "carro": "",
+          "telefone": "(12) 99717-7103",
+          "foto": ""
+        },
+        {
+          "nome": "Délcio",
+          "carro": "",
+          "telefone": "(12) 99770-3803",
           "foto": ""
         }
       ]
