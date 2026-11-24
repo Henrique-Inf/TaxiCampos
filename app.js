@@ -161,7 +161,7 @@
       '<section class="faixa">' +
         '<div class="faixa__conteudo">' +
           '<h2 class="display faixa__titulo">A serra toda<br>num toque</h2>' +
-          '<p class="faixa__texto">Do Capivari ao Jaguaribe, da Rodoviária ao Pão de Açúcar: tem sempre um táxi perto de você.</p>' +
+          '<p class="faixa__texto">Da Abernéssia ao Capivari, sempre tem um táxi perto de você. É só escolher o ponto e chamar.</p>' +
         "</div>" +
       "</section>" +
 
@@ -294,12 +294,10 @@
     img.replaceWith(span);
   }, true);
 
-  // Textos fixos do topo e do rodapé
+  // Texto fixo do topo
   var cidade = dados.cidade || "Campos do Jordão";
   var selo = document.getElementById("selo-texto");
   if (selo) selo.textContent = plural(totalTaxistas, "taxista", "taxistas") + " em " + cidade;
-  var rodapeCidade = document.getElementById("rodape-cidade");
-  if (rodapeCidade) rodapeCidade.textContent = cidade;
 
   window.addEventListener("hashchange", rotear);
   rotear();

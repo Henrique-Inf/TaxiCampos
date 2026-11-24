@@ -662,37 +662,3 @@ img { max-width: 100%; }
 .acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .acoes .btn { padding: 0 14px; }
 .acoes .btn:only-child { grid-column: 1 / -1; }
-
-/* =========================================================
-   Rodapé
-   ========================================================= */
-
-.rodape {
-  padding: clamp(50px, 8vw, 100px) var(--margem) 30px;
-  border-top: 1px solid var(--linha);
-  overflow: hidden;
-}
-.rodape__gigante {
-  margin: 0;
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: clamp(3.6rem, 19.5vw, 24rem);
-  line-height: .8;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 196, 0, .55);
-  user-select: none;
-}
-.rodape__linha {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px 30px;
-  flex-wrap: wrap;
-  margin-top: 34px;
-  font-size: .88rem;
-  color: var(--creme-fraco);
-}
-.rodape__linha p { margin: 0; }
-.rodape__creditos a { color: var(--creme-suave); }
-.rodape__creditos a:hover { color: var(--amarelo); }
