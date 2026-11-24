@@ -99,8 +99,294 @@ window.TAXI_DADOS = {
       ]
     },
     {
-      "id": "capivari",
+      "id": "elite",
       "numero": "02",
+      "regiao": "Abernéssia",
+      "nome": "Ponto Elite",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Carlinhos 🚖",
+          "carro": "",
+          "telefone": "(12) 99772-4620",
+          "foto": ""
+        },
+        {
+          "nome": "Ivan (Brad Pitt)",
+          "carro": "",
+          "telefone": "(12) 98193-1593",
+          "foto": ""
+        },
+        {
+          "nome": "Régis Cruz",
+          "carro": "",
+          "telefone": "(12) 99722-3121",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "novo",
+      "numero": "03",
+      "regiao": "Abernéssia",
+      "nome": "Ponto Novo",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Alison Mello",
+          "carro": "",
+          "telefone": "(12) 99774-3563",
+          "foto": ""
+        },
+        {
+          "nome": "André Mello",
+          "carro": "",
+          "telefone": "(12) 99728-5903",
+          "foto": ""
+        },
+        {
+          "nome": "Enira",
+          "carro": "",
+          "telefone": "(12) 99736-6861",
+          "foto": ""
+        },
+        {
+          "nome": "Manoel",
+          "carro": "",
+          "telefone": "(12) 99727-8262",
+          "foto": ""
+        },
+        {
+          "nome": "Romualdo",
+          "carro": "",
+          "telefone": "(12) 99634-7736",
+          "foto": ""
+        },
+        {
+          "nome": "Zezinho",
+          "carro": "",
+          "telefone": "(12) 99769-1597",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "pao-de-acucar",
+      "numero": "04",
+      "regiao": "Abernéssia",
+      "nome": "Ponto Pão de Açúcar",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Bruno Dias",
+          "carro": "",
+          "telefone": "(12) 99682-4231",
+          "foto": ""
+        },
+        {
+          "nome": "Luiz Paulo",
+          "carro": "",
+          "telefone": "(12) 98231-9471",
+          "foto": ""
+        },
+        {
+          "nome": "Marcelo",
+          "carro": "",
+          "telefone": "(12) 99703-6527",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "piratininga",
+      "numero": "05",
+      "regiao": "Abernéssia",
+      "nome": "Ponto Piratininga",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Fábio Dias",
+          "carro": "",
+          "telefone": "(12) 99769-9744",
+          "foto": ""
+        },
+        {
+          "nome": "Flávio",
+          "carro": "",
+          "telefone": "(12) 99708-6543",
+          "foto": ""
+        },
+        {
+          "nome": "Thiago",
+          "carro": "",
+          "telefone": "(12) 98104-0585",
+          "foto": ""
+        },
+        {
+          "nome": "Guilherme (aux)",
+          "carro": "",
+          "telefone": "(12) 99624-6696",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "jaguaribe",
+      "numero": "06",
+      "regiao": "Jaguaribe",
+      "nome": "Ponto Jaguaribe",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Caio Lúcio",
+          "carro": "",
+          "telefone": "(12) 99766-7846",
+          "foto": ""
+        },
+        {
+          "nome": "Danilo Quintanilha",
+          "carro": "",
+          "telefone": "(12) 99623-8237",
+          "foto": ""
+        },
+        {
+          "nome": "Eleno Martini",
+          "carro": "",
+          "telefone": "(12) 99774-4510",
+          "foto": ""
+        },
+        {
+          "nome": "Matheus Martini",
+          "carro": "",
+          "telefone": "(12) 99662-9193",
+          "foto": ""
+        },
+        {
+          "nome": "Valdeci Donizeti",
+          "carro": "",
+          "telefone": "(12) 99717-7103",
+          "foto": ""
+        },
+        {
+          "nome": "Délcio",
+          "carro": "",
+          "telefone": "(12) 99770-3803",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "jordanense",
+      "numero": "07",
+      "regiao": "Jaguaribe",
+      "nome": "Ponto Jordanense",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Ademir",
+          "carro": "",
+          "telefone": "(12) 99773-4045",
+          "foto": ""
+        },
+        {
+          "nome": "Alessandra",
+          "carro": "",
+          "telefone": "(12) 99118-2817",
+          "foto": ""
+        },
+        {
+          "nome": "Andre Negrini",
+          "carro": "",
+          "telefone": "(12) 99771-9496",
+          "foto": ""
+        },
+        {
+          "nome": "Leandro",
+          "carro": "",
+          "telefone": "(12) 99797-4663",
+          "foto": ""
+        },
+        {
+          "nome": "Lucas",
+          "carro": "",
+          "telefone": "(12) 99778-8378",
+          "foto": ""
+        },
+        {
+          "nome": "Eduardo",
+          "carro": "",
+          "telefone": "(12) 99708-1923",
+          "foto": ""
+        },
+        {
+          "nome": "Priscila",
+          "carro": "",
+          "telefone": "(12) 99742-2175",
+          "foto": ""
+        },
+        {
+          "nome": "Roque Martini",
+          "carro": "",
+          "telefone": "(12) 99739-5972",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "rodoviaria",
+      "numero": "08",
+      "regiao": "Jaguaribe",
+      "nome": "Ponto Rodoviária",
+      "endereco": "",
+      "telefone": "",
+      "taxistas": [
+        {
+          "nome": "Augusto",
+          "carro": "",
+          "telefone": "(12) 99158-5159",
+          "foto": ""
+        },
+        {
+          "nome": "Cleber",
+          "carro": "",
+          "telefone": "(12) 99733-9243",
+          "foto": ""
+        },
+        {
+          "nome": "Eliezer",
+          "carro": "",
+          "telefone": "(12) 99646-4291",
+          "foto": ""
+        },
+        {
+          "nome": "Geraldo",
+          "carro": "",
+          "telefone": "(12) 99773-3279",
+          "foto": ""
+        },
+        {
+          "nome": "Hélcio",
+          "carro": "",
+          "telefone": "(12) 99657-3047",
+          "foto": ""
+        },
+        {
+          "nome": "Luiz Fernando",
+          "carro": "",
+          "telefone": "(12) 99610-7594",
+          "foto": ""
+        }
+      ]
+    },
+    {
+      "id": "capivari",
+      "numero": "09",
       "regiao": "Capivari",
       "nome": "Ponto Capivari",
       "endereco": "",
@@ -248,292 +534,6 @@ window.TAXI_DADOS = {
           "nome": "Zeca",
           "carro": "",
           "telefone": "(12) 99747-4015",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "elite",
-      "numero": "03",
-      "regiao": "Abernéssia",
-      "nome": "Ponto Elite",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Carlinhos 🚖",
-          "carro": "",
-          "telefone": "(12) 99772-4620",
-          "foto": ""
-        },
-        {
-          "nome": "Ivan (Brad Pitt)",
-          "carro": "",
-          "telefone": "(12) 98193-1593",
-          "foto": ""
-        },
-        {
-          "nome": "Régis Cruz",
-          "carro": "",
-          "telefone": "(12) 99722-3121",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "jaguaribe",
-      "numero": "04",
-      "regiao": "Jaguaribe",
-      "nome": "Ponto Jaguaribe",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Caio Lúcio",
-          "carro": "",
-          "telefone": "(12) 99766-7846",
-          "foto": ""
-        },
-        {
-          "nome": "Danilo Quintanilha",
-          "carro": "",
-          "telefone": "(12) 99623-8237",
-          "foto": ""
-        },
-        {
-          "nome": "Eleno Martini",
-          "carro": "",
-          "telefone": "(12) 99774-4510",
-          "foto": ""
-        },
-        {
-          "nome": "Matheus Martini",
-          "carro": "",
-          "telefone": "(12) 99662-9193",
-          "foto": ""
-        },
-        {
-          "nome": "Valdeci Donizeti",
-          "carro": "",
-          "telefone": "(12) 99717-7103",
-          "foto": ""
-        },
-        {
-          "nome": "Délcio",
-          "carro": "",
-          "telefone": "(12) 99770-3803",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "jordanense",
-      "numero": "05",
-      "regiao": "Jaguaribe",
-      "nome": "Ponto Jordanense",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Ademir",
-          "carro": "",
-          "telefone": "(12) 99773-4045",
-          "foto": ""
-        },
-        {
-          "nome": "Alessandra",
-          "carro": "",
-          "telefone": "(12) 99118-2817",
-          "foto": ""
-        },
-        {
-          "nome": "Andre Negrini",
-          "carro": "",
-          "telefone": "(12) 99771-9496",
-          "foto": ""
-        },
-        {
-          "nome": "Leandro",
-          "carro": "",
-          "telefone": "(12) 99797-4663",
-          "foto": ""
-        },
-        {
-          "nome": "Lucas",
-          "carro": "",
-          "telefone": "(12) 99778-8378",
-          "foto": ""
-        },
-        {
-          "nome": "Eduardo",
-          "carro": "",
-          "telefone": "(12) 99708-1923",
-          "foto": ""
-        },
-        {
-          "nome": "Priscila",
-          "carro": "",
-          "telefone": "(12) 99742-2175",
-          "foto": ""
-        },
-        {
-          "nome": "Roque Martini",
-          "carro": "",
-          "telefone": "(12) 99739-5972",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "novo",
-      "numero": "06",
-      "regiao": "Abernéssia",
-      "nome": "Ponto Novo",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Alison Mello",
-          "carro": "",
-          "telefone": "(12) 99774-3563",
-          "foto": ""
-        },
-        {
-          "nome": "André Mello",
-          "carro": "",
-          "telefone": "(12) 99728-5903",
-          "foto": ""
-        },
-        {
-          "nome": "Enira",
-          "carro": "",
-          "telefone": "(12) 99736-6861",
-          "foto": ""
-        },
-        {
-          "nome": "Manoel",
-          "carro": "",
-          "telefone": "(12) 99727-8262",
-          "foto": ""
-        },
-        {
-          "nome": "Romualdo",
-          "carro": "",
-          "telefone": "(12) 99634-7736",
-          "foto": ""
-        },
-        {
-          "nome": "Zezinho",
-          "carro": "",
-          "telefone": "(12) 99769-1597",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "pao-de-acucar",
-      "numero": "07",
-      "regiao": "Abernéssia",
-      "nome": "Ponto Pão de Açúcar",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Bruno Dias",
-          "carro": "",
-          "telefone": "(12) 99682-4231",
-          "foto": ""
-        },
-        {
-          "nome": "Luiz Paulo",
-          "carro": "",
-          "telefone": "(12) 98231-9471",
-          "foto": ""
-        },
-        {
-          "nome": "Marcelo",
-          "carro": "",
-          "telefone": "(12) 99703-6527",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "piratininga",
-      "numero": "08",
-      "regiao": "Abernéssia",
-      "nome": "Ponto Piratininga",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Fábio Dias",
-          "carro": "",
-          "telefone": "(12) 99769-9744",
-          "foto": ""
-        },
-        {
-          "nome": "Flávio",
-          "carro": "",
-          "telefone": "(12) 99708-6543",
-          "foto": ""
-        },
-        {
-          "nome": "Thiago",
-          "carro": "",
-          "telefone": "(12) 98104-0585",
-          "foto": ""
-        },
-        {
-          "nome": "Guilherme (aux)",
-          "carro": "",
-          "telefone": "(12) 99624-6696",
-          "foto": ""
-        }
-      ]
-    },
-    {
-      "id": "rodoviaria",
-      "numero": "09",
-      "regiao": "Jaguaribe",
-      "nome": "Ponto Rodoviária",
-      "endereco": "",
-      "telefone": "",
-      "taxistas": [
-        {
-          "nome": "Augusto",
-          "carro": "",
-          "telefone": "(12) 99158-5159",
-          "foto": ""
-        },
-        {
-          "nome": "Cleber",
-          "carro": "",
-          "telefone": "(12) 99733-9243",
-          "foto": ""
-        },
-        {
-          "nome": "Eliezer",
-          "carro": "",
-          "telefone": "(12) 99646-4291",
-          "foto": ""
-        },
-        {
-          "nome": "Geraldo",
-          "carro": "",
-          "telefone": "(12) 99773-3279",
-          "foto": ""
-        },
-        {
-          "nome": "Hélcio",
-          "carro": "",
-          "telefone": "(12) 99657-3047",
-          "foto": ""
-        },
-        {
-          "nome": "Luiz Fernando",
-          "carro": "",
-          "telefone": "(12) 99610-7594",
           "foto": ""
         }
       ]
