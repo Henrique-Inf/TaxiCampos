@@ -25,7 +25,7 @@
       .replace(/[̀-ͯ]/g, "");
   }
 
-  // Converte "(22) 99999-0000" em "5522999990000" (formato internacional, só dígitos)
+  // Converte "(12) 99999-0000" em "5512999990000" (formato internacional, só dígitos)
   function numeroInternacional(telefone) {
     var d = String(telefone || "").replace(/\D/g, "");
     if (!d) return "";
@@ -102,7 +102,7 @@
           foto +
           '<div class="taxista-info">' +
             '<h3 class="taxista-nome">' + esc(t.nome) + "</h3>" +
-            '<p class="taxista-carro">🚗 ' + esc(t.carro || "Carro não informado") + "</p>" +
+            (t.carro ? '<p class="taxista-carro">🚗 ' + esc(t.carro) + "</p>" : "") +
             (t.telefone ? '<p class="taxista-tel">' + esc(t.telefone) + "</p>" : "") +
             (mostrarPonto && ponto
               ? '<p class="taxista-ponto"><a href="#/ponto/' + encodeURIComponent(ponto.id) + '">Ponto ' +
