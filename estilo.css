@@ -115,6 +115,17 @@ img { max-width: 100%; }
 }
 
 
+.nav__links { display: flex; align-items: center; gap: 6px; }
+.nav__link {
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: .92rem;
+  text-decoration: none;
+  transition: background .2s, color .2s;
+}
+.nav__link:hover { background: rgba(247, 240, 225, .1); color: var(--amarelo); }
+
 .nav__botao {
   justify-self: end;
   padding: 9px 18px;
@@ -130,6 +141,11 @@ img { max-width: 100%; }
 
 @media (max-width: 640px) {
   .nav__marca { font-size: 1.35rem; }
+  .nav__link { padding: 9px 8px; }
+}
+@media (max-width: 370px) {
+  .nav__marca { font-size: 1.15rem; }
+  .nav__botao { padding: 9px 14px; }
 }
 
 /* =========================================================
@@ -625,7 +641,8 @@ img { max-width: 100%; }
   text-transform: uppercase;
   overflow-wrap: anywhere;
 }
-.taxista__carro { margin: 8px 0 0; color: var(--creme); font-weight: 500; }
+.taxista__carro { margin: 8px 0 0; color: var(--creme); font-weight: 500; min-height: 1.5em; }
+.taxista__carro span { color: var(--amarelo); font-weight: 700; }
 .taxista__tel {
   margin: 4px 0 0;
   color: var(--creme-suave);
@@ -639,3 +656,167 @@ img { max-width: 100%; }
 .acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .acoes .btn { padding: 0 14px; }
 .acoes .btn:only-child { grid-column: 1 / -1; }
+
+/* =========================================================
+   Apoiadores
+   ========================================================= */
+
+.topo-simples {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 120px var(--margem) clamp(44px, 7vw, 80px);
+  overflow: hidden;
+  isolation: isolate;
+}
+.topo-simples::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 60% 70% at 85% 10%, rgba(255, 196, 0, .16), transparent 70%);
+}
+.topo-simples .voltar { margin-bottom: clamp(40px, 7vw, 80px); }
+.topo-simples__titulo {
+  font-size: clamp(4.2rem, 17vw, 14rem);
+  animation: subir .8s cubic-bezier(.2, .7, .2, 1) both;
+}
+.topo-simples__titulo .amarelo { color: var(--amarelo); }
+.topo-simples__texto {
+  max-width: 44ch;
+  margin: 22px 0 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  color: var(--creme-suave);
+}
+
+.grade-apoiadores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 14px;
+}
+
+.apoiador {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--raio);
+  background: var(--carvao);
+  border: 1px solid var(--linha);
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color .25s, transform .25s;
+}
+a.apoiador:hover { border-color: var(--amarelo); transform: translateY(-4px); }
+
+.apoiador__logo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  padding: 26px;
+  background: var(--creme);
+  color: var(--noite);
+}
+.apoiador__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.logo-nome {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: .95;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.apoiador__info { padding: 20px 22px 22px; }
+.apoiador__nome {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.9rem;
+  line-height: .95;
+  text-transform: uppercase;
+}
+.apoiador__descricao { margin: 8px 0 0; color: var(--creme-suave); }
+.apoiador__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-weight: 700;
+  font-size: .92rem;
+  color: var(--amarelo);
+}
+.apoiador__link svg { width: 16px; height: 16px; transition: transform .2s; }
+a.apoiador:hover .apoiador__link svg { transform: translateX(4px); }
+
+/* lugar vago (enquanto não há apoiadores) */
+.vago {
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  border: 1.5px dashed var(--creme-fraco);
+  background: transparent;
+  color: var(--creme-fraco);
+  font-weight: 700;
+  font-size: .8rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   Rodapé (apoiadores)
+   ========================================================= */
+
+.rodape {
+  padding: clamp(44px, 6vw, 70px) var(--margem) clamp(36px, 5vw, 56px);
+  border-top: 1px solid var(--linha);
+}
+.rodape[hidden] { display: none; }
+.rodape__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.rodape__topo .rotulo { margin: 0; }
+.rodape__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  font-size: .92rem;
+  text-decoration: none;
+  color: var(--creme-suave);
+  transition: color .2s;
+}
+.rodape__ver:hover { color: var(--amarelo); }
+.rodape__ver svg { width: 16px; height: 16px; }
+
+.rodape__logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.rodape__logo {
+  display: grid;
+  place-items: center;
+  height: 92px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(247, 240, 225, .92);
+  color: var(--noite);
+  text-decoration: none;
+  filter: grayscale(1);
+  opacity: .85;
+  transition: filter .25s, opacity .25s, transform .25s;
+}
+a.rodape__logo:hover { filter: none; opacity: 1; transform: translateY(-3px); }
+.rodape__logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.rodape__logo .logo-nome { font-size: 1.35rem; }
+.rodape__logo.vago {
+  min-height: 0;
+  border-radius: 16px;
+  background: transparent;
+  filter: none;
+  opacity: 1;
+  font-size: .72rem;
+}

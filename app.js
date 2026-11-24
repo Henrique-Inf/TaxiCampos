@@ -42,7 +42,9 @@
   }
 
   function iniciais(nome) {
-    var partes = String(nome || "?").replace(/\(.*?\)/g, "").trim().split(/\s+/);
+    var partes = String(nome || "").replace(/\(.*?\)/g, " ").split(/\s+/)
+      .filter(function (p) { return /^\p{L}/u.test(p); });
+    if (!partes.length) return "?";
     var ini = partes[0].charAt(0) + (partes.length > 1 ? partes[partes.length - 1].charAt(0) : "");
     return ini.toUpperCase();
   }
@@ -53,6 +55,8 @@
   }
 
   function plural(n, um, varios) { return n + " " + (n === 1 ? um : varios); }
+
+  var apoiadores = (dados.apoiadores || []).filter(function (a) { return a && a.nome; });
 
   var totalTaxistas = pontos.reduce(function (s, p) { return s + (p.taxistas || []).length; }, 0);
 
@@ -101,7 +105,7 @@
           foto +
           '<div class="taxista__info">' +
             '<h3 class="taxista__nome">' + esc(t.nome) + "</h3>" +
-            (t.carro ? '<p class="taxista__carro">' + esc(t.carro) + "</p>" : "") +
+            '<p class="taxista__carro"><span>Carro:</span> ' + esc(t.carro || "") + "</p>" +
             (t.telefone ? '<p class="taxista__tel">' + esc(t.telefone) + "</p>" : "") +
             (mostrarPonto && ponto
               ? '<p class="taxista__ponto"><a href="#/ponto/' + encodeURIComponent(ponto.id) + '">Ponto ' +
@@ -121,6 +125,63 @@
         "</div>" +
       "</article>"
     );
+  }
+
+  function linkSeguro(url) {
+    url = String(url || "").trim();
+    if (!url) return "";
+    if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+    return url;
+  }
+
+  function logoApoiador(a) {
+    return a.logo
+      ? '<img src="' + esc(a.logo) + '" alt="' + esc(a.nome) + '" loading="lazy" data-nome="' + esc(a.nome) + '">'
+      : '<span class="logo-nome">' + esc(a.nome) + "</span>";
+  }
+
+  function cartaoApoiador(a) {
+    var site = linkSeguro(a.site);
+    var abre = site
+      ? '<a class="apoiador" href="' + esc(site) + '" target="_blank" rel="noopener">'
+      : '<div class="apoiador">';
+    return (
+      abre +
+        '<div class="apoiador__logo">' + logoApoiador(a) + "</div>" +
+        '<div class="apoiador__info">' +
+          '<h3 class="apoiador__nome">' + esc(a.nome) + "</h3>" +
+          (a.descricao ? '<p class="apoiador__descricao">' + esc(a.descricao) + "</p>" : "") +
+          (site ? '<span class="apoiador__link">Visitar ' + ICONE_SETA + "</span>" : "") +
+        "</div>" +
+      (site ? "</a>" : "</div>")
+    );
+  }
+
+  function lugarVazio(classe, qtd) {
+    var html = "";
+    for (var i = 0; i < qtd; i++) html += '<div class="' + classe + ' vago" aria-hidden="true">Seu logo aqui</div>';
+    return html;
+  }
+
+  function renderRodape(mostrar) {
+    var rodape = document.getElementById("rodape");
+    if (!rodape) return;
+    if (!mostrar) { rodape.hidden = true; rodape.innerHTML = ""; return; }
+    rodape.hidden = false;
+    var logos = apoiadores.length
+      ? apoiadores.map(function (a) {
+          var site = linkSeguro(a.site);
+          return site
+            ? '<a class="rodape__logo" href="' + esc(site) + '" target="_blank" rel="noopener" title="' + esc(a.nome) + '">' + logoApoiador(a) + "</a>"
+            : '<div class="rodape__logo" title="' + esc(a.nome) + '">' + logoApoiador(a) + "</div>";
+        }).join("")
+      : lugarVazio("rodape__logo", 4);
+    rodape.innerHTML =
+      '<div class="rodape__topo">' +
+        '<p class="rotulo">Apoiadores</p>' +
+        '<a class="rodape__ver" href="#/apoiadores">Ver todos ' + ICONE_SETA + "</a>" +
+      "</div>" +
+      '<div class="rodape__logos">' + logos + "</div>";
   }
 
   /* ---------- telas ---------- */
@@ -251,6 +312,25 @@
       "</section>";
   }
 
+  function telaApoiadores() {
+    document.title = "Apoiadores — TaxiCampos";
+    app.innerHTML =
+      '<section class="topo-simples">' +
+        '<a class="voltar" href="#/">' + ICONE_SETA + "Início</a>" +
+        '<p class="rotulo">Quem ajuda o TaxiCampos</p>' +
+        '<h1 class="display topo-simples__titulo">Apoia<span class="amarelo">dores</span></h1>' +
+        '<p class="topo-simples__texto">Empresas e pessoas de ' + esc(dados.cidade || "Campos do Jordão") +
+          " que apoiam o TaxiCampos. Valorize quem valoriza o táxi da cidade.</p>" +
+      "</section>" +
+      '<div class="xadrez xadrez--fina" aria-hidden="true"></div>' +
+      '<section class="secao">' +
+        (apoiadores.length
+          ? '<div class="grade-apoiadores">' + apoiadores.map(cartaoApoiador).join("") + "</div>"
+          : '<p class="vazio">Ainda não há apoiadores cadastrados.</p>' +
+            '<div class="grade-apoiadores">' + lugarVazio("apoiador", 3) + "</div>") +
+      "</section>";
+  }
+
   /* ---------- rotas e rolagem ---------- */
 
   var rolarPara = null;
@@ -259,7 +339,9 @@
     var hash = location.hash.replace(/^#\/?/, "");
     var m = hash.match(/^ponto\/(.+)$/);
     if (m) telaPonto(decodeURIComponent(m[1]));
+    else if (hash === "apoiadores") telaApoiadores();
     else telaInicio();
+    renderRodape(hash !== "apoiadores");
 
     if (rolarPara) rotearRolagem();
     else window.scrollTo({ top: 0, behavior: "instant" });
@@ -283,9 +365,16 @@
     if (alvo.id === "busca") alvo.focus({ preventScroll: true });
   }
 
-  // Se a foto não carregar, mostra as iniciais no lugar
+  // Se a foto não carregar, mostra as iniciais no lugar (ou o nome, no caso de logo)
   document.addEventListener("error", function (e) {
     var img = e.target;
+    if (img.tagName === "IMG" && img.hasAttribute("data-nome")) {
+      var nome = document.createElement("span");
+      nome.className = "logo-nome";
+      nome.textContent = img.getAttribute("data-nome");
+      img.replaceWith(nome);
+      return;
+    }
     if (img.tagName !== "IMG" || !img.classList.contains("foto")) return;
     var span = document.createElement("span");
     span.className = "foto foto-iniciais";

@@ -22,6 +22,17 @@
  * Na mensagem do WhatsApp, {nome} é trocado pelo primeiro nome do taxista
  * e {ponto} pelo nome do ponto.
  *
+ * Cada apoiador (lista "apoiadores", no fim do arquivo) tem:
+ *   nome      → nome da empresa ou pessoa
+ *   logo      → (opcional) caminho do logo, ex.: "apoiadores/padaria.png"
+ *               sem logo, o site mostra o nome escrito
+ *   descricao → (opcional) uma frase curta, ex.: "Padaria e confeitaria"
+ *   site      → (opcional) link do site ou Instagram, ex.: "https://instagram.com/padaria"
+ *
+ * Exemplo de apoiador:
+ *   { nome: "Padaria Serrana", logo: "apoiadores/padaria.png",
+ *     descricao: "Padaria e confeitaria no Capivari", site: "https://instagram.com/padariaserrana" }
+ *
  */
 
 window.TAXI_DADOS = {
@@ -514,5 +525,8 @@ window.TAXI_DADOS = {
         }
       ]
     }
-  ]
+  ],
+
+  // Apoiadores: aparecem na página "Apoiadores" e no rodapé do site.
+  apoiadores: []
 };

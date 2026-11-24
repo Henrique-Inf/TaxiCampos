@@ -17,6 +17,23 @@ Todos os dados ficam em **`dados.js`**. Para adicionar um ponto ou um taxista, c
 
 > Os campos `carro` e `foto` ainda estão vazios. Preencha conforme for juntando as informações. Enquanto isso, o site mostra as iniciais no lugar da foto e esconde a linha do carro.
 
+## Apoiadores
+
+Os apoiadores aparecem na página **Apoiadores** (link no topo do site) e no rodapé de todas as páginas. Eles ficam no fim do `dados.js`, na lista `apoiadores`:
+
+```js
+apoiadores: [
+  {
+    nome: "Padaria Serrana",
+    logo: "apoiadores/padaria.png",          // opcional: sem logo, aparece o nome
+    descricao: "Padaria e confeitaria",       // opcional
+    site: "https://instagram.com/padaria"     // opcional: link do site ou Instagram
+  }
+]
+```
+
+Coloque os logos na pasta `apoiadores/`. Funcionam melhor em PNG com fundo transparente. Enquanto a lista estiver vazia, o site mostra espaços "Seu logo aqui".
+
 ## Como ver no computador
 
 Abra o arquivo `index.html` no navegador. Não precisa instalar nada.
@@ -36,6 +53,7 @@ Abra o arquivo `index.html` no navegador. Não precisa instalar nada.
 | `app.js`     | Lógica: lista, busca, links de WhatsApp e ligação |
 | `dados.js`   | **Pontos e taxistas**: é aqui que se edita |
 | `fotos/`     | Fotos dos taxistas                        |
+| `apoiadores/`| Logos dos apoiadores                      |
 | `fontes/`    | Fontes Big Shoulders Display e Schibsted Grotesk (licença OFL) |
 
 ## Créditos
