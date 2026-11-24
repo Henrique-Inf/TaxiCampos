@@ -294,10 +294,6 @@
     img.replaceWith(span);
   }, true);
 
-  // Texto fixo do topo
-  var cidade = dados.cidade || "Campos do Jordão";
-  var selo = document.getElementById("selo-texto");
-  if (selo) selo.textContent = plural(totalTaxistas, "taxista", "taxistas") + " em " + cidade;
 
   window.addEventListener("hashchange", rotear);
   rotear();
