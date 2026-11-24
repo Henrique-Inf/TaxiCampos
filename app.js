@@ -3,6 +3,55 @@
 
   var dados = window.TAXI_DADOS || { pontos: [] };
   var pontos = dados.pontos || [];
+
+  /* ---------- ordem do dia ----------
+   * A lista de taxistas de cada ponto é embaralhada uma vez por dia, para
+   * ninguém ficar sempre no topo. No mesmo dia, todo mundo vê a mesma ordem.
+   */
+
+  function hoje() {
+    try {
+      return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
+    } catch (e) {
+      var d = new Date();
+      return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    }
+  }
+
+  function semente(texto) {
+    var h = 2166136261;
+    for (var i = 0; i < texto.length; i++) {
+      h ^= texto.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return h >>> 0;
+  }
+
+  function aleatorio(s) { // mulberry32: mesmo número inicial → mesma sequência
+    return function () {
+      s = (s + 0x6D2B79F5) | 0;
+      var t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function embaralharDoDia(lista, chave) {
+    var copia = lista.slice();
+    var rnd = aleatorio(semente(hoje() + "|" + chave));
+    for (var i = copia.length - 1; i > 0; i--) {
+      var j = Math.floor(rnd() * (i + 1));
+      var x = copia[i]; copia[i] = copia[j]; copia[j] = x;
+    }
+    return copia;
+  }
+
+  pontos = pontos.map(function (p) {
+    var c = {};
+    for (var k in p) c[k] = p[k];
+    c.taxistas = embaralharDoDia(p.taxistas || [], p.id || p.nome);
+    return c;
+  });
   var app = document.getElementById("app");
 
   /* ---------- utilitários ---------- */
@@ -74,7 +123,42 @@
   }
 
   var temRegioes = pontos.some(function (p) { return regiaoDe(p); });
-  var regiaoAtiva = null; // null = todas
+  var regiaoAtiva = null; // null = todas, "perto" = ordenado pela distância
+
+  /* ---------- mapa e distância ---------- */
+
+  function coordsDe(p) {
+    var lat = parseFloat(String(p.lat == null ? "" : p.lat).replace(",", "."));
+    var lng = parseFloat(String(p.lng == null ? "" : p.lng).replace(",", "."));
+    return isFinite(lat) && isFinite(lng) ? { lat: lat, lng: lng } : null;
+  }
+  var temCoords = pontos.some(coordsDe);
+  var minhaPosicao = null;
+  var avisoLocal = "";
+
+  function linkComoChegar(p) {
+    var c = coordsDe(p);
+    if (p.mapa) return linkSeguro(p.mapa);
+    if (c) return "https://www.google.com/maps/dir/?api=1&destination=" + c.lat + "," + c.lng;
+    if (p.endereco) {
+      return "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(p.endereco + ", " + (dados.cidade || "Campos do Jordão") + " - SP");
+    }
+    return "";
+  }
+
+  function distanciaKm(a, b) {
+    var r = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * r, dLng = (b.lng - a.lng) * r;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+  }
+
+  function textoDistancia(km) {
+    if (km < 1) return "a " + Math.max(50, Math.round(km * 1000 / 50) * 50) + " m";
+    return "a " + (km < 10 ? km.toFixed(1).replace(".", ",") : Math.round(km)) + " km";
+  }
 
   var totalTaxistas = pontos.reduce(function (s, p) { return s + (p.taxistas || []).length; }, 0);
 
@@ -95,13 +179,14 @@
 
   function regiaoDe(ponto) { return String(ponto.regiao || "").trim(); }
 
-  function cartaoPonto(ponto, mostrarRegiao) {
+  function cartaoPonto(ponto, mostrarRegiao, distancia) {
     var qtd = (ponto.taxistas || []).length;
     var regiao = mostrarRegiao ? regiaoDe(ponto) : "";
     return (
       '<a class="ponto" href="#/ponto/' + encodeURIComponent(ponto.id) + '">' +
         '<span class="ponto__numero" aria-hidden="true">' + esc(ponto.numero) + "</span>" +
         '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + (regiao ? " · " + esc(regiao) : "") + "</span>" +
+        (distancia != null ? '<span class="ponto__distancia">' + ICONE_PINO + textoDistancia(distancia) + "</span>" : "") +
         "<div>" +
           '<h3 class="ponto__nome">' + esc(nomeCurto(ponto)) + "</h3>" +
           '<div class="ponto__rodape">' +
@@ -267,21 +352,46 @@
       if (!q) {
         if (!pontos.length) {
           resultados.innerHTML = '<p class="vazio">Nenhum ponto cadastrado ainda.</p>';
-        } else if (!temRegioes) {
+        } else if (!temRegioes && !temCoords) {
           resultados.innerHTML = '<div class="grade-pontos">' +
             pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>";
         } else {
-          var grupos = agruparPorRegiao(pontos);
+          var grupos = temRegioes ? agruparPorRegiao(pontos) : [{ nome: "", pontos: pontos }];
           var chave = function (g) { return g.nome || "outros"; };
-          var filtros = '<div class="filtros" role="group" aria-label="Filtrar por região">' +
-            '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva === null) + '">Todas</button>' +
-            grupos.map(function (g) {
+          var filtros = '<div class="filtros" role="group" aria-label="Filtrar pontos">' +
+            (temCoords
+              ? '<button type="button" class="filtro filtro--perto" data-regiao="perto" aria-pressed="' + (regiaoAtiva === "perto") + '">' +
+                ICONE_PINO + (regiaoAtiva === "localizando" ? "Localizando…" : "Perto de mim") + "</button>"
+              : "") +
+            '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva === null) + '">' +
+              (temRegioes ? "Todas" : "Todos") + "</button>" +
+            (temRegioes ? grupos.map(function (g) {
               return '<button type="button" class="filtro" data-regiao="' + esc(chave(g)) + '" aria-pressed="' +
                 (regiaoAtiva === chave(g)) + '">' + esc(g.nome || "Outros") + "<span>" + g.pontos.length + "</span></button>";
-            }).join("") +
-          "</div>";
+            }).join("") : "") +
+          "</div>" +
+          (avisoLocal ? '<p class="aviso-local">' + esc(avisoLocal) + "</p>" : "");
+
+          if (regiaoAtiva === "perto" && minhaPosicao) {
+            var ordenados = pontos.map(function (p) {
+              var c = coordsDe(p);
+              return { p: p, d: c ? distanciaKm(minhaPosicao, c) : null };
+            }).sort(function (x, y) {
+              if (x.d == null) return 1;
+              if (y.d == null) return -1;
+              return x.d - y.d;
+            });
+            resultados.innerHTML = filtros +
+              '<div class="grade-pontos">' + ordenados.map(function (x) { return cartaoPonto(x.p, true, x.d); }).join("") + "</div>";
+            return;
+          }
+          if (!temRegioes) {
+            resultados.innerHTML = filtros + '<div class="grade-pontos">' +
+              pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>";
+            return;
+          }
           resultados.innerHTML = filtros + grupos
-            .filter(function (g) { return regiaoAtiva === null || regiaoAtiva === chave(g); })
+            .filter(function (g) { return regiaoAtiva === null || regiaoAtiva === "localizando" || regiaoAtiva === chave(g); })
             .map(function (g) {
               return '<div class="regiao">' +
                 '<h3 class="regiao__titulo">' + ICONE_PINO + "<span>" + esc(g.nome || "Outros pontos") + "</span>" +
@@ -321,8 +431,25 @@
       var botao = e.target.closest(".filtro");
       if (!botao) return;
       var r = botao.getAttribute("data-regiao");
-      regiaoAtiva = r ? r : null;
+      avisoLocal = "";
+      if (r !== "perto") { regiaoAtiva = r ? r : null; render(); return; }
+      if (minhaPosicao) { regiaoAtiva = "perto"; render(); return; }
+      if (!navigator.geolocation) {
+        avisoLocal = "Seu navegador não informa a localização. Escolha o ponto pelo bairro.";
+        render();
+        return;
+      }
+      regiaoAtiva = "localizando";
       render();
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        minhaPosicao = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        regiaoAtiva = "perto";
+        render();
+      }, function () {
+        regiaoAtiva = null;
+        avisoLocal = "Não consegui pegar sua localização. Confira se o navegador tem permissão de localização e tente de novo.";
+        render();
+      }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
     });
     render();
   }
@@ -351,6 +478,10 @@
         '<div class="topo-ponto__info">' +
           "<span><strong>" + plural(taxistas.length, "taxista", "taxistas") + "</strong></span>" +
           (ponto.endereco ? "<span>" + esc(ponto.endereco) + "</span>" : "") +
+          (linkComoChegar(ponto)
+            ? '<a class="btn btn--fantasma" href="' + esc(linkComoChegar(ponto)) + '" target="_blank" rel="noopener">' +
+              ICONE_PINO + "<span>Como chegar</span></a>"
+            : "") +
           (telPonto
             ? '<a class="btn btn--fantasma" href="' + esc(telPonto) + '">' + ICONE_TEL +
               "<span>Ligar para o ponto · " + esc(ponto.telefone) + "</span></a>"
@@ -440,4 +571,56 @@
 
   window.addEventListener("hashchange", rotear);
   rotear();
+
+  /* ---------- app instalável (tela inicial + sem internet) ---------- */
+
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+
+  (function () {
+    var aviso = document.getElementById("instalar");
+    var sim = document.getElementById("instalar-sim");
+    var nao = document.getElementById("instalar-nao");
+    var dialogoIos = document.getElementById("dialogo-ios");
+    if (!aviso || !sim || !nao) return;
+
+    var CHAVE = "taxicampos_instalar_fechado";
+    var instalado = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    var fechadoEm = 0;
+    try { fechadoEm = +localStorage.getItem(CHAVE) || 0; } catch (e) {}
+    var fechadoRecente = Date.now() - fechadoEm < 1000 * 60 * 60 * 24 * 14; // 14 dias
+    if (instalado || fechadoRecente) return;
+
+    var pedido = null;
+    var ehIos = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    function mostrar() { setTimeout(function () { aviso.hidden = false; }, 2500); }
+    function esconder() { aviso.hidden = true; }
+
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      pedido = e;
+      mostrar();
+    });
+    window.addEventListener("appinstalled", esconder);
+
+    if (ehIos && dialogoIos) mostrar();
+
+    sim.addEventListener("click", function () {
+      if (pedido) {
+        pedido.prompt();
+        pedido.userChoice.then(function () { pedido = null; esconder(); });
+      } else if (ehIos && dialogoIos) {
+        dialogoIos.showModal();
+      }
+    });
+    nao.addEventListener("click", function () {
+      esconder();
+      try { localStorage.setItem(CHAVE, String(Date.now())); } catch (e) {}
+    });
+  })();
 })();

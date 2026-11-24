@@ -10,6 +10,10 @@
  *   nome      → nome do ponto
  *   endereco  → (opcional) endereço ou referência
  *   telefone  → (opcional) telefone fixo do ponto
+ *   mapa      → (opcional) link do ponto no Google Maps; ativa o botão "Como chegar"
+ *   lat, lng  → (opcional) latitude e longitude do ponto, ex.: -22.7395 e -45.5913;
+ *               ativam o botão "Perto de mim", que ordena os pontos pela distância
+ *               (sem mapa, o "Como chegar" usa estas coordenadas ou o endereço)
  *   taxistas  → lista de taxistas do ponto
  *
  * Cada taxista tem:
@@ -53,6 +57,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Avenida",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Elias Santos",
@@ -105,6 +112,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Elite",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Carlinhos 🚖",
@@ -133,6 +143,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Novo",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Alison Mello",
@@ -179,6 +192,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Pão de Açúcar",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Bruno Dias",
@@ -207,6 +223,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Piratininga",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Fábio Dias",
@@ -241,6 +260,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Jaguaribe",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Caio Lúcio",
@@ -287,6 +309,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Jordanense",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Ademir",
@@ -345,6 +370,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Rodoviária",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Augusto",
@@ -391,6 +419,9 @@ window.TAXI_DADOS = {
       "nome": "Ponto Capivari",
       "endereco": "",
       "telefone": "",
+      "mapa": "",
+      "lat": "",
+      "lng": "",
       "taxistas": [
         {
           "nome": "Alexandre Táxi",

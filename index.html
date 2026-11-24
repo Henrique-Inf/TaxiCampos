@@ -3,10 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Contatos de táxi de Campos do Jordão: pontos de táxi e taxistas com WhatsApp e telefone.">
+  <meta name="description" content="Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.">
   <meta name="theme-color" content="#0E0D0B">
   <title>TaxiCampos — Táxi em Campos do Jordão</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚕</text></svg>">
+  <link rel="icon" type="image/png" href="icones/favicon-64.png">
+  <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TaxiCampos">
+
+  <!-- Prévia ao compartilhar o link (WhatsApp, Facebook, Instagram...) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="TaxiCampos">
+  <meta property="og:title" content="TaxiCampos — Táxi em Campos do Jordão">
+  <meta property="og:description" content="Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Henrique-Inf/TaxiCampos/main/icones/compartilhar.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TaxiCampos: táxi em Campos do Jordão, com botões de WhatsApp e Ligar">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="fontes/big-shoulders-display-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fontes/schibsted-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
@@ -27,6 +45,22 @@
 
   <footer class="rodape" id="rodape" aria-label="Apoiadores"></footer>
 
+  <div class="instalar" id="instalar" hidden>
+    <img src="icones/icone-192.png" alt="" width="44" height="44">
+    <p><strong>Instale o TaxiCampos</strong><span>Fica na tela inicial, como um app.</span></p>
+    <button type="button" class="btn btn--amarelo" id="instalar-sim">Instalar</button>
+    <button type="button" class="instalar__fechar" id="instalar-nao" aria-label="Fechar">×</button>
+  </div>
+
+  <dialog class="dialogo" id="dialogo-ios">
+    <h2>Instalar no iPhone</h2>
+    <ol>
+      <li>Toque no botão <strong>Compartilhar</strong> do Safari (o quadrado com a seta para cima).</li>
+      <li>Role e toque em <strong>Adicionar à Tela de Início</strong>.</li>
+      <li>Toque em <strong>Adicionar</strong>. O TaxiCampos aparece junto dos seus apps.</li>
+    </ol>
+    <form method="dialog"><button class="btn btn--amarelo">Entendi</button></form>
+  </dialog>
 
   <script src="dados.js"></script>
   <script src="app.js"></script>

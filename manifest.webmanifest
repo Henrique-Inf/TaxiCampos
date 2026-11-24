@@ -1,0 +1,17 @@
+{
+  "name": "TaxiCampos — Táxi em Campos do Jordão",
+  "short_name": "TaxiCampos",
+  "description": "Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0E0D0B",
+  "theme_color": "#0E0D0B",
+  "icons": [
+    { "src": "icones/icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icones/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
