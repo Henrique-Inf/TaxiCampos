@@ -230,9 +230,48 @@
     );
   }
 
-  function lugarVazio(classe, qtd) {
+  // Quadradinhos "Tenha sua empresa aqui", que abrem o WhatsApp de quem cuida do site
+  function linkSerApoiador() {
+    var c = dados.contatoApoio || {};
+    var n = numeroInternacional(c.whatsapp);
+    if (!n) return "";
+    var msg = c.mensagem || "Olá! Vi o site TaxiCampos e gostaria de saber como minha empresa pode ser apoiadora do site.";
+    return "https://wa.me/" + n + "?text=" + encodeURIComponent(msg);
+  }
+
+  // Quantas vagas mostrar: completa a grade (múltiplo de "colunas"), com pelo menos "minimo" vagas
+  function quantasVagas(total, alvo, minimo, colunas) {
+    var v = Math.max(alvo - total, minimo);
+    while ((total + v) % colunas) v++;
+    return v;
+  }
+
+  var ICONE_MAIS =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>';
+
+  function vagasPagina(qtd) {
+    var link = linkSerApoiador();
     var html = "";
-    for (var i = 0; i < qtd; i++) html += '<div class="' + classe + ' vago" aria-hidden="true">Seu logo aqui</div>';
+    for (var i = 0; i < qtd; i++) {
+      html += (link ? '<a class="apoiador vaga" href="' + esc(link) + '" target="_blank" rel="noopener">' : '<div class="apoiador vaga">') +
+        '<div class="apoiador__logo vaga__logo">' + ICONE_MAIS + "</div>" +
+        '<div class="apoiador__info">' +
+          '<h3 class="apoiador__nome">Tenha sua empresa aqui</h3>' +
+          '<p class="apoiador__descricao">Apoie o site e apareça para quem procura táxi em ' + esc(dados.cidade || "Campos do Jordão") + ".</p>" +
+          (link ? '<span class="apoiador__link">Falar no WhatsApp ' + ICONE_SETA + "</span>" : "") +
+        "</div>" +
+      (link ? "</a>" : "</div>");
+    }
+    return html;
+  }
+
+  function vagasRodape(qtd) {
+    var link = linkSerApoiador();
+    var html = "";
+    for (var i = 0; i < qtd; i++) {
+      html += (link ? '<a class="rodape__logo vaga" href="' + esc(link) + '" target="_blank" rel="noopener">' : '<div class="rodape__logo vaga">') +
+        ICONE_MAIS + "<span>Tenha sua empresa aqui</span>" + (link ? "</a>" : "</div>");
+    }
     return html;
   }
 
@@ -241,17 +280,16 @@
     if (!rodape) return;
     if (!mostrar) { rodape.hidden = true; rodape.innerHTML = ""; return; }
     rodape.hidden = false;
-    var logos = apoiadores.length
-      ? apoiadores.map(function (a) {
+    var logos = apoiadores.map(function (a) {
           var site = linkSeguro(a.site);
           return site
             ? '<a class="rodape__logo" href="' + esc(site) + '" target="_blank" rel="noopener" title="' + esc(a.nome) + '">' + logoApoiador(a) + "</a>"
             : '<div class="rodape__logo" title="' + esc(a.nome) + '">' + logoApoiador(a) + "</div>";
-        }).join("")
-      : lugarVazio("rodape__logo", 4);
+        }).join("") +
+      vagasRodape(quantasVagas(apoiadores.length, 6, 1, 2));
     rodape.innerHTML =
       '<div class="rodape__topo">' +
-        '<p class="rotulo">Apoiadores</p>' +
+        '<p class="rotulo">Apoiadores do site</p>' +
         '<a class="rodape__ver" href="#/apoiadores">Ver todos ' + ICONE_SETA + "</a>" +
       "</div>" +
       '<div class="rodape__logos">' + logos + "</div>";
@@ -467,17 +505,18 @@
     app.innerHTML =
       '<section class="topo-simples">' +
         '<a class="voltar" href="#/">' + ICONE_SETA + "Início</a>" +
-        '<p class="rotulo">Quem ajuda o TaxiCampos</p>' +
+        '<p class="rotulo">Quem apoia o site</p>' +
         '<h1 class="display topo-simples__titulo">Apoia<span class="amarelo">dores</span></h1>' +
-        '<p class="topo-simples__texto">Empresas e pessoas de ' + esc(dados.cidade || "Campos do Jordão") +
-          " que apoiam o TaxiCampos. Valorize quem valoriza o táxi da cidade.</p>" +
+        '<p class="topo-simples__texto">Estas empresas apoiam o <strong>site TaxiCampos</strong>: ajudam a mantê-lo no ar e gratuito para todo mundo.</p>' +
+        '<p class="aviso-apoio">Os apoiadores não têm ligação com os taxistas nem com as corridas. ' +
+          "Valores, combinados e atendimento são tratados direto com cada taxista.</p>" +
       "</section>" +
       '<div class="xadrez xadrez--fina" aria-hidden="true"></div>' +
       '<section class="secao">' +
-        (apoiadores.length
-          ? '<div class="grade-apoiadores">' + apoiadores.map(cartaoApoiador).join("") + "</div>"
-          : '<p class="vazio">Ainda não há apoiadores cadastrados.</p>' +
-            '<div class="grade-apoiadores">' + lugarVazio("apoiador", 3) + "</div>") +
+        '<div class="grade-apoiadores">' +
+          apoiadores.map(cartaoApoiador).join("") +
+          vagasPagina(quantasVagas(apoiadores.length, 6, 2, 3)) +
+        "</div>" +
       "</section>";
   }
 

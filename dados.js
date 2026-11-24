@@ -571,6 +571,12 @@ window.TAXI_DADOS = {
     }
   ],
 
+  // Quadradinhos "Tenha sua empresa aqui": abrem este WhatsApp com a mensagem pronta
+  contatoApoio: {
+    whatsapp: "(12) 98820-1858",
+    mensagem: "Olá! Vi o site TaxiCampos e gostaria de saber como minha empresa pode ser apoiadora do site."
+  },
+
   // Apoiadores: aparecem na página "Apoiadores" e no rodapé do site.
   apoiadores: [
     {

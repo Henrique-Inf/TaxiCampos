@@ -57,7 +57,9 @@ apoiadores: [
 ]
 ```
 
-Coloque os logos na pasta `apoiadores/`. Funcionam melhor em PNG com fundo transparente. Enquanto a lista estiver vazia, o site mostra espaços "Seu logo aqui".
+Coloque os logos na pasta `apoiadores/`. Funcionam melhor em PNG com fundo transparente.
+
+Junto dos apoiadores aparecem quadradinhos **"Tenha sua empresa aqui"**, que abrem o WhatsApp de quem cuida do site com uma mensagem pronta. O número e a mensagem ficam em `contatoApoio`, no `dados.js`. A página deixa claro que os apoiadores apoiam o site, e não os taxistas.
 
 ## Como ver no computador
 
