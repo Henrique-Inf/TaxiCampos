@@ -49,7 +49,7 @@ window.TAXI_DADOS = {
     {
       "id": "avenida",
       "numero": "01",
-      "regiao": "",
+      "regiao": "Abernéssia",
       "nome": "Ponto Avenida",
       "endereco": "",
       "telefone": "",
@@ -101,7 +101,7 @@ window.TAXI_DADOS = {
     {
       "id": "capivari",
       "numero": "02",
-      "regiao": "",
+      "regiao": "Capivari",
       "nome": "Ponto Capivari",
       "endereco": "",
       "telefone": "",
@@ -255,7 +255,7 @@ window.TAXI_DADOS = {
     {
       "id": "elite",
       "numero": "03",
-      "regiao": "",
+      "regiao": "Abernéssia",
       "nome": "Ponto Elite",
       "endereco": "",
       "telefone": "",
@@ -283,7 +283,7 @@ window.TAXI_DADOS = {
     {
       "id": "jaguaribe",
       "numero": "04",
-      "regiao": "",
+      "regiao": "Jaguaribe",
       "nome": "Ponto Jaguaribe",
       "endereco": "",
       "telefone": "",
@@ -329,7 +329,7 @@ window.TAXI_DADOS = {
     {
       "id": "jordanense",
       "numero": "05",
-      "regiao": "",
+      "regiao": "Jaguaribe",
       "nome": "Ponto Jordanense",
       "endereco": "",
       "telefone": "",
@@ -387,7 +387,7 @@ window.TAXI_DADOS = {
     {
       "id": "novo",
       "numero": "06",
-      "regiao": "",
+      "regiao": "Abernéssia",
       "nome": "Ponto Novo",
       "endereco": "",
       "telefone": "",
@@ -433,7 +433,7 @@ window.TAXI_DADOS = {
     {
       "id": "pao-de-acucar",
       "numero": "07",
-      "regiao": "",
+      "regiao": "Abernéssia",
       "nome": "Ponto Pão de Açúcar",
       "endereco": "",
       "telefone": "",
@@ -461,7 +461,7 @@ window.TAXI_DADOS = {
     {
       "id": "piratininga",
       "numero": "08",
-      "regiao": "",
+      "regiao": "Abernéssia",
       "nome": "Ponto Piratininga",
       "endereco": "",
       "telefone": "",
@@ -495,7 +495,7 @@ window.TAXI_DADOS = {
     {
       "id": "rodoviaria",
       "numero": "09",
-      "regiao": "",
+      "regiao": "Jaguaribe",
       "nome": "Ponto Rodoviária",
       "endereco": "",
       "telefone": "",
