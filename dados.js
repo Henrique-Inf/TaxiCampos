@@ -55,11 +55,11 @@ window.TAXI_DADOS = {
       "numero": "01",
       "regiao": "Abernéssia",
       "nome": "Ponto Avenida",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 1240 - Abernéssia",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7389428",
+      "lng": "-45.5925293",
       "taxistas": [
         {
           "nome": "Elias Santos",
@@ -110,11 +110,11 @@ window.TAXI_DADOS = {
       "numero": "02",
       "regiao": "Abernéssia",
       "nome": "Ponto Elite",
-      "endereco": "",
+      "endereco": "Av. Emílio Ribas - Abernéssia",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7383152",
+      "lng": "-45.5919612",
       "taxistas": [
         {
           "nome": "Carlinhos 🚖",
@@ -141,11 +141,11 @@ window.TAXI_DADOS = {
       "numero": "03",
       "regiao": "Abernéssia",
       "nome": "Ponto Novo",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 1201 - Abernéssia",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7369959",
+      "lng": "-45.5906476",
       "taxistas": [
         {
           "nome": "Alison Mello",
@@ -258,11 +258,11 @@ window.TAXI_DADOS = {
       "numero": "06",
       "regiao": "Jaguaribe",
       "nome": "Ponto Jaguaribe",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 2765 - Jaguaribe",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7293694",
+      "lng": "-45.5823852",
       "taxistas": [
         {
           "nome": "Caio Lúcio",
@@ -368,11 +368,11 @@ window.TAXI_DADOS = {
       "numero": "08",
       "regiao": "Jaguaribe",
       "nome": "Ponto Rodoviária",
-      "endereco": "",
+      "endereco": "Terminal Rodoviário de Campos do Jordão",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7247746",
+      "lng": "-45.5801103",
       "taxistas": [
         {
           "nome": "Augusto",
@@ -417,11 +417,11 @@ window.TAXI_DADOS = {
       "numero": "09",
       "regiao": "Capivari",
       "nome": "Ponto Capivari",
-      "endereco": "",
+      "endereco": "R. Eng. Diogo José de Carvalho - Capivari",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7183652",
+      "lng": "-45.5668894",
       "taxistas": [
         {
           "nome": "Alexandre Táxi",
