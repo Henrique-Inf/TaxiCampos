@@ -32,7 +32,7 @@ Para pegar as coordenadas no Google Maps: segure o dedo no local do ponto e os n
 
 ## Ordem dos taxistas
 
-A lista de taxistas de cada ponto é embaralhada uma vez por dia (horário de Brasília), para ninguém ficar sempre no topo. No mesmo dia, todo mundo vê a mesma ordem. No `dados.js` a ordem não importa.
+Toda vez que alguém abre um ponto, a lista de taxistas aparece numa ordem diferente, sorteada na hora, para ninguém ficar sempre no topo. No `dados.js` a ordem não importa.
 
 ## App no celular e sem internet
 

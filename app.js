@@ -4,54 +4,19 @@
   var dados = window.TAXI_DADOS || { pontos: [] };
   var pontos = dados.pontos || [];
 
-  /* ---------- ordem do dia ----------
-   * A lista de taxistas de cada ponto é embaralhada uma vez por dia, para
-   * ninguém ficar sempre no topo. No mesmo dia, todo mundo vê a mesma ordem.
+  /* ---------- ordem dos taxistas ----------
+   * Toda vez que um ponto é aberto, a lista de taxistas é embaralhada,
+   * para ninguém ficar sempre no topo.
    */
 
-  function hoje() {
-    try {
-      return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(new Date());
-    } catch (e) {
-      var d = new Date();
-      return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
-    }
-  }
-
-  function semente(texto) {
-    var h = 2166136261;
-    for (var i = 0; i < texto.length; i++) {
-      h ^= texto.charCodeAt(i);
-      h = Math.imul(h, 16777619);
-    }
-    return h >>> 0;
-  }
-
-  function aleatorio(s) { // mulberry32: mesmo número inicial → mesma sequência
-    return function () {
-      s = (s + 0x6D2B79F5) | 0;
-      var t = Math.imul(s ^ (s >>> 15), 1 | s);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  function embaralharDoDia(lista, chave) {
+  function embaralhar(lista) {
     var copia = lista.slice();
-    var rnd = aleatorio(semente(hoje() + "|" + chave));
     for (var i = copia.length - 1; i > 0; i--) {
-      var j = Math.floor(rnd() * (i + 1));
+      var j = Math.floor(Math.random() * (i + 1));
       var x = copia[i]; copia[i] = copia[j]; copia[j] = x;
     }
     return copia;
   }
-
-  pontos = pontos.map(function (p) {
-    var c = {};
-    for (var k in p) c[k] = p[k];
-    c.taxistas = embaralharDoDia(p.taxistas || [], p.id || p.nome);
-    return c;
-  });
   var app = document.getElementById("app");
 
   /* ---------- utilitários ---------- */
@@ -465,7 +430,7 @@
     }
 
     document.title = ponto.nome + " — TaxiCampos";
-    var taxistas = ponto.taxistas || [];
+    var taxistas = embaralhar(ponto.taxistas || []);
     var telPonto = linkLigar(ponto.telefone);
 
     app.innerHTML =
