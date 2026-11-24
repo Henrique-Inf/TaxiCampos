@@ -2,27 +2,19 @@
   "use strict";
 
   var dados = window.TAXI_DADOS || { pontos: [] };
+  var pontos = dados.pontos || [];
   var app = document.getElementById("app");
-  var subtitulo = document.getElementById("subtitulo");
-
-  if (dados.cidade) subtitulo.textContent = "Contatos de táxi em " + dados.cidade;
 
   /* ---------- utilitários ---------- */
 
   function esc(texto) {
     return String(texto == null ? "" : texto)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
   function normalizar(texto) {
-    return String(texto || "")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "");
+    return String(texto || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
   }
 
   // Converte "(12) 99999-0000" em "5512999990000" (formato internacional, só dígitos)
@@ -50,14 +42,19 @@
   }
 
   function iniciais(nome) {
-    var partes = String(nome || "?").trim().split(/\s+/);
+    var partes = String(nome || "?").replace(/\(.*?\)/g, "").trim().split(/\s+/);
     var ini = partes[0].charAt(0) + (partes.length > 1 ? partes[partes.length - 1].charAt(0) : "");
     return ini.toUpperCase();
   }
 
-  function plural(n, um, varios) {
-    return n + " " + (n === 1 ? um : varios);
+  // "Ponto Capivari" → "Capivari"
+  function nomeCurto(ponto) {
+    return String(ponto.nome || "").replace(/^ponto\s+(d[aeo]s?\s+)?/i, "") || ponto.nome;
   }
+
+  function plural(n, um, varios) { return n + " " + (n === 1 ? um : varios); }
+
+  var totalTaxistas = pontos.reduce(function (s, p) { return s + (p.taxistas || []).length; }, 0);
 
   /* ---------- ícones ---------- */
 
@@ -66,7 +63,9 @@
   var ICONE_TEL =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>';
   var ICONE_SETA =
-    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.3 5.3a1 1 0 0 1 1.4 0l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 1 1-1.4-1.4l5.3-5.3-5.3-5.3a1 1 0 0 1 0-1.4Z"/></svg>';
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var ICONE_BUSCA =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Zm5.3-2.2L21 21"/></svg>';
 
   /* ---------- componentes ---------- */
 
@@ -74,15 +73,15 @@
     var qtd = (ponto.taxistas || []).length;
     return (
       '<a class="ponto" href="#/ponto/' + encodeURIComponent(ponto.id) + '">' +
-        '<span class="ponto-numero" aria-label="Ponto número ' + esc(ponto.numero) + '">' +
-          '<small>Ponto</small>' + esc(ponto.numero) +
-        "</span>" +
-        '<span class="ponto-info">' +
-          '<span class="ponto-nome">' + esc(ponto.nome) + "</span>" +
-          (ponto.endereco ? '<span class="ponto-endereco">' + esc(ponto.endereco) + "</span>" : "") +
-          '<span class="ponto-qtd">' + plural(qtd, "taxista", "taxistas") + "</span>" +
-        "</span>" +
-        '<span class="ponto-seta">' + ICONE_SETA + "</span>" +
+        '<span class="ponto__numero" aria-hidden="true">' + esc(ponto.numero) + "</span>" +
+        '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + "</span>" +
+        "<div>" +
+          '<h3 class="ponto__nome">' + esc(nomeCurto(ponto)) + "</h3>" +
+          '<div class="ponto__rodape">' +
+            "<span>" + plural(qtd, "taxista", "taxistas") + "</span>" +
+            '<span class="ponto__seta">' + ICONE_SETA + "</span>" +
+          "</div>" +
+        "</div>" +
       "</a>"
     );
   }
@@ -98,25 +97,25 @@
 
     return (
       '<article class="taxista">' +
-        '<div class="taxista-topo">' +
+        '<div class="taxista__topo">' +
           foto +
-          '<div class="taxista-info">' +
-            '<h3 class="taxista-nome">' + esc(t.nome) + "</h3>" +
-            (t.carro ? '<p class="taxista-carro">🚗 ' + esc(t.carro) + "</p>" : "") +
-            (t.telefone ? '<p class="taxista-tel">' + esc(t.telefone) + "</p>" : "") +
+          '<div class="taxista__info">' +
+            '<h3 class="taxista__nome">' + esc(t.nome) + "</h3>" +
+            (t.carro ? '<p class="taxista__carro">' + esc(t.carro) + "</p>" : "") +
+            (t.telefone ? '<p class="taxista__tel">' + esc(t.telefone) + "</p>" : "") +
             (mostrarPonto && ponto
-              ? '<p class="taxista-ponto"><a href="#/ponto/' + encodeURIComponent(ponto.id) + '">Ponto ' +
-                esc(ponto.numero) + " · " + esc(ponto.nome) + "</a></p>"
+              ? '<p class="taxista__ponto"><a href="#/ponto/' + encodeURIComponent(ponto.id) + '">Ponto ' +
+                esc(ponto.numero) + " · " + esc(nomeCurto(ponto)) + "</a></p>"
               : "") +
           "</div>" +
         "</div>" +
         '<div class="acoes">' +
           (whats
-            ? '<a class="botao botao-whats" href="' + esc(whats) + '" target="_blank" rel="noopener" ' +
+            ? '<a class="btn btn--whats" href="' + esc(whats) + '" target="_blank" rel="noopener" ' +
               'aria-label="Chamar ' + esc(t.nome) + ' no WhatsApp">' + ICONE_WHATS + "<span>WhatsApp</span></a>"
             : "") +
           (tel
-            ? '<a class="botao botao-ligar" href="' + esc(tel) + '" aria-label="Ligar para ' + esc(t.nome) + '">' +
+            ? '<a class="btn btn--amarelo" href="' + esc(tel) + '" aria-label="Ligar para ' + esc(t.nome) + '">' +
               ICONE_TEL + "<span>Ligar</span></a>"
             : "") +
         "</div>" +
@@ -127,25 +126,63 @@
   /* ---------- telas ---------- */
 
   function telaInicio() {
-    document.title = "TaxiCampos — Contatos de Táxi";
+    document.title = "TaxiCampos — Táxi em " + (dados.cidade || "Campos do Jordão");
+
     app.innerHTML =
-      '<div class="busca">' +
-        '<label for="busca" class="sr-only">Buscar ponto, taxista ou carro</label>' +
-        '<input id="busca" type="search" placeholder="Buscar ponto, taxista ou carro…" autocomplete="off">' +
-      "</div>" +
-      '<div id="resultados"></div>';
+      '<section class="capa">' +
+        '<div class="capa__foto" aria-hidden="true"></div>' +
+        '<h1 class="display capa__titulo"><span>Taxi</span><span class="amarelo">Campos</span></h1>' +
+        '<div class="capa__rodape">' +
+          '<p class="capa__texto">Os taxistas de ' + esc(dados.cidade || "Campos do Jordão") +
+            ", ponto por ponto. Chame no WhatsApp ou ligue direto.</p>" +
+          '<div class="capa__acoes">' +
+            '<a class="btn btn--amarelo" href="#/" data-rolar="pontos">Ver os pontos ' + ICONE_SETA + "</a>" +
+            '<a class="btn btn--fantasma" href="#/" data-rolar="busca">Buscar taxista</a>' +
+          "</div>" +
+        "</div>" +
+        '<p class="capa__dica">' + plural(pontos.length, "ponto", "pontos") + " · " +
+          plural(totalTaxistas, "taxista", "taxistas") + "</p>" +
+      "</section>" +
+
+      '<div class="xadrez" aria-hidden="true"></div>' +
+
+      '<section class="secao" id="pontos">' +
+        '<div class="secao__topo">' +
+          '<h2 class="display secao__titulo"><span class="rotulo">Escolha o mais perto</span>Pontos de <span class="amarelo">táxi</span></h2>' +
+          '<div class="busca">' +
+            ICONE_BUSCA +
+            '<label for="busca" class="sr-only">Buscar ponto, taxista ou carro</label>' +
+            '<input id="busca" type="search" placeholder="Buscar ponto, taxista ou carro" autocomplete="off">' +
+          "</div>" +
+        "</div>" +
+        '<div id="resultados"></div>' +
+      "</section>" +
+
+      '<section class="faixa">' +
+        '<div class="faixa__conteudo">' +
+          '<h2 class="display faixa__titulo">A serra toda<br>num toque</h2>' +
+          '<p class="faixa__texto">Do Capivari ao Jaguaribe, da Rodoviária ao Pão de Açúcar: tem sempre um táxi perto de você.</p>' +
+        "</div>" +
+      "</section>" +
+
+      '<section class="secao claro">' +
+        '<p class="manifesto">Taxista de confiança, que conhece a cidade. <span>Sem aplicativo, sem cadastro: é só chamar.</span></p>' +
+        '<ol class="passos">' +
+          "<li><b>1</b><h3>Escolha o ponto</h3><p>Veja os pontos de táxi da cidade e abra o mais perto de onde você está.</p></li>" +
+          "<li><b>2</b><h3>Escolha o taxista</h3><p>Cada ponto mostra os taxistas que trabalham ali, com nome e telefone.</p></li>" +
+          "<li><b>3</b><h3>Chame</h3><p>Toque no WhatsApp e a mensagem já vai pronta. Ou ligue direto.</p></li>" +
+        "</ol>" +
+      "</section>";
 
     var campo = document.getElementById("busca");
     var resultados = document.getElementById("resultados");
 
     function render() {
       var q = normalizar(campo.value.trim());
-      var pontos = dados.pontos || [];
 
       if (!q) {
         resultados.innerHTML = pontos.length
-          ? '<h2 class="titulo-secao">Pontos de táxi</h2><div class="lista-pontos">' +
-            pontos.map(cartaoPonto).join("") + "</div>"
+          ? '<div class="grade-pontos">' + pontos.map(cartaoPonto).join("") + "</div>"
           : '<p class="vazio">Nenhum ponto cadastrado ainda.</p>';
         return;
       }
@@ -157,22 +194,20 @@
       var taxistasAchados = [];
       pontos.forEach(function (p) {
         (p.taxistas || []).forEach(function (t) {
-          if (normalizar(t.nome + " " + (t.carro || "")).indexOf(q) !== -1) {
-            taxistasAchados.push({ t: t, p: p });
-          }
+          if (normalizar(t.nome + " " + (t.carro || "")).indexOf(q) !== -1) taxistasAchados.push({ t: t, p: p });
         });
       });
 
       var html = "";
       if (pontosAchados.length) {
-        html += '<h2 class="titulo-secao">Pontos</h2><div class="lista-pontos">' +
+        html += '<p class="subtitulo-lista">Pontos</p><div class="grade-pontos">' +
           pontosAchados.map(cartaoPonto).join("") + "</div>";
       }
       if (taxistasAchados.length) {
-        html += '<h2 class="titulo-secao">Taxistas</h2><div class="lista-taxistas">' +
+        html += '<p class="subtitulo-lista">' + plural(taxistasAchados.length, "taxista", "taxistas") + '</p><div class="grade-taxistas">' +
           taxistasAchados.map(function (x) { return cartaoTaxista(x.t, x.p, true); }).join("") + "</div>";
       }
-      resultados.innerHTML = html || '<p class="vazio">Nada encontrado para “' + esc(campo.value) + '”.</p>';
+      resultados.innerHTML = html || '<p class="vazio">Nada encontrado para “' + esc(campo.value) + "”.</p>";
     }
 
     campo.addEventListener("input", render);
@@ -180,12 +215,12 @@
   }
 
   function telaPonto(id) {
-    var ponto = (dados.pontos || []).filter(function (p) { return String(p.id) === id; })[0];
+    var ponto = pontos.filter(function (p) { return String(p.id) === id; })[0];
 
     if (!ponto) {
       app.innerHTML =
-        '<a class="voltar" href="#/">← Todos os pontos</a>' +
-        '<p class="vazio">Ponto não encontrado.</p>';
+        '<section class="topo-ponto"><a class="voltar" href="#/">' + ICONE_SETA + "Todos os pontos</a>" +
+        '<h1 class="display topo-ponto__nome">Ponto não encontrado</h1></section>';
       return;
     }
 
@@ -194,34 +229,58 @@
     var telPonto = linkLigar(ponto.telefone);
 
     app.innerHTML =
-      '<a class="voltar" href="#/">← Todos os pontos</a>' +
-      '<section class="cabecalho-ponto">' +
-        '<span class="ponto-numero grande"><small>Ponto</small>' + esc(ponto.numero) + "</span>" +
-        "<div>" +
-          "<h1>" + esc(ponto.nome) + "</h1>" +
-          (ponto.endereco ? '<p class="ponto-endereco">📍 ' + esc(ponto.endereco) + "</p>" : "") +
+      '<section class="topo-ponto">' +
+        '<a class="voltar" href="#/" data-rolar="pontos">' + ICONE_SETA + "Todos os pontos</a>" +
+        '<p class="topo-ponto__rotulo">Ponto <b>' + esc(ponto.numero) + "</b></p>" +
+        '<h1 class="display topo-ponto__nome">' + esc(nomeCurto(ponto)) + "</h1>" +
+        '<div class="topo-ponto__info">' +
+          "<span><strong>" + plural(taxistas.length, "taxista", "taxistas") + "</strong></span>" +
+          (ponto.endereco ? "<span>" + esc(ponto.endereco) + "</span>" : "") +
           (telPonto
-            ? '<a class="botao botao-ligar pequeno" href="' + esc(telPonto) + '">' + ICONE_TEL +
+            ? '<a class="btn btn--fantasma" href="' + esc(telPonto) + '">' + ICONE_TEL +
               "<span>Ligar para o ponto · " + esc(ponto.telefone) + "</span></a>"
             : "") +
         "</div>" +
       "</section>" +
-      '<h2 class="titulo-secao">' + plural(taxistas.length, "taxista", "taxistas") + "</h2>" +
-      (taxistas.length
-        ? '<div class="lista-taxistas">' +
-          taxistas.map(function (t) { return cartaoTaxista(t, ponto, false); }).join("") + "</div>"
-        : '<p class="vazio">Nenhum taxista cadastrado neste ponto.</p>');
-
-    window.scrollTo(0, 0);
+      '<div class="xadrez xadrez--fina" aria-hidden="true"></div>' +
+      '<section class="secao">' +
+        (taxistas.length
+          ? '<div class="grade-taxistas">' +
+            taxistas.map(function (t) { return cartaoTaxista(t, ponto, false); }).join("") + "</div>"
+          : '<p class="vazio">Nenhum taxista cadastrado neste ponto.</p>') +
+      "</section>";
   }
 
-  /* ---------- rotas ---------- */
+  /* ---------- rotas e rolagem ---------- */
+
+  var rolarPara = null;
 
   function rotear() {
     var hash = location.hash.replace(/^#\/?/, "");
     var m = hash.match(/^ponto\/(.+)$/);
     if (m) telaPonto(decodeURIComponent(m[1]));
     else telaInicio();
+
+    if (rolarPara) rotearRolagem();
+    else window.scrollTo(0, 0);
+  }
+
+  // Links "Ver os pontos", "Buscar taxista" e "Todos os pontos" rolam até a seção certa
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest("[data-rolar]");
+    if (!link) return;
+    e.preventDefault();
+    rolarPara = link.getAttribute("data-rolar");
+    if (location.hash.replace(/^#\/?/, "") === "") rotearRolagem();
+    else location.hash = "#/";
+  });
+
+  function rotearRolagem() {
+    var alvo = document.getElementById(rolarPara);
+    rolarPara = null;
+    if (!alvo) return;
+    alvo.scrollIntoView({ behavior: "smooth", block: alvo.id === "busca" ? "center" : "start" });
+    if (alvo.id === "busca") alvo.focus({ preventScroll: true });
   }
 
   // Se a foto não carregar, mostra as iniciais no lugar
@@ -234,6 +293,13 @@
     span.textContent = img.getAttribute("data-iniciais") || "?";
     img.replaceWith(span);
   }, true);
+
+  // Textos fixos do topo e do rodapé
+  var cidade = dados.cidade || "Campos do Jordão";
+  var selo = document.getElementById("selo-texto");
+  if (selo) selo.textContent = plural(totalTaxistas, "taxista", "taxistas") + " em " + cidade;
+  var rodapeCidade = document.getElementById("rodape-cidade");
+  if (rodapeCidade) rodapeCidade.textContent = cidade;
 
   window.addEventListener("hashchange", rotear);
   rotear();

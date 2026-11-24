@@ -36,3 +36,9 @@ Abra o arquivo `index.html` no navegador. Não precisa instalar nada.
 | `app.js`     | Lógica: lista, busca, links de WhatsApp e ligação |
 | `dados.js`   | **Pontos e taxistas**: é aqui que se edita |
 | `fotos/`     | Fotos dos taxistas                        |
+| `fontes/`    | Fontes Big Shoulders Display e Schibsted Grotesk (licença OFL) |
+
+## Créditos
+
+- Fontes: [Big Shoulders Display](https://fonts.google.com/specimen/Big+Shoulders+Display) e [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk), licença SIL Open Font License.
+- Fotos de fundo (Unsplash, carregadas direto de lá): placa de táxi por [Waldemar Brandt](https://unsplash.com/photos/kYbYIWdJRh0), Serra da Mantiqueira por [Regiany Almeida](https://unsplash.com/photos/TfpxVQhVzJU) e chalé em Campos do Jordão por [Gabriel Ramos](https://unsplash.com/photos/GXcy_NMBvIo).
