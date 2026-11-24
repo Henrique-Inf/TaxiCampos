@@ -190,11 +190,11 @@ window.TAXI_DADOS = {
       "numero": "04",
       "regiao": "Abernéssia",
       "nome": "Ponto Pão de Açúcar",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 1772 (supermercado Pão de Açúcar) - Abernéssia",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7361998",
+      "lng": "-45.5885032",
       "taxistas": [
         {
           "nome": "Bruno Dias",
@@ -221,11 +221,11 @@ window.TAXI_DADOS = {
       "numero": "05",
       "regiao": "Abernéssia",
       "nome": "Ponto Piratininga",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 608 (supermercado Piratininga) - Abernéssia",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7434970",
+      "lng": "-45.5964445",
       "taxistas": [
         {
           "nome": "Fábio Dias",
@@ -307,11 +307,11 @@ window.TAXI_DADOS = {
       "numero": "07",
       "regiao": "Jaguaribe",
       "nome": "Ponto Jordanense",
-      "endereco": "",
+      "endereco": "Av. Dr. Januário Miraglia, 836",
       "telefone": "",
       "mapa": "",
-      "lat": "",
-      "lng": "",
+      "lat": "-22.7416045",
+      "lng": "-45.5948344",
       "taxistas": [
         {
           "nome": "Ademir",
