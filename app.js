@@ -262,7 +262,7 @@
     else telaInicio();
 
     if (rolarPara) rotearRolagem();
-    else window.scrollTo(0, 0);
+    else window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   // Links "Ver os pontos", "Buscar taxista" e "Todos os pontos" rolam até a seção certa
