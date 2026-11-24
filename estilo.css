@@ -556,7 +556,7 @@ img { max-width: 100%; }
   color: var(--noite);
 }
 .manifesto {
-  max-width: 16ch;
+  max-width: 19ch;
   margin: 0;
   font-family: var(--display);
   font-weight: 800;
