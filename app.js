@@ -166,7 +166,7 @@
       "</section>" +
 
       '<section class="secao claro">' +
-        '<p class="manifesto">Taxista de confiança, que conhece a cidade. <span>Sem aplicativo, sem cadastro: é só chamar.</span></p>' +
+        '<p class="manifesto">Taxista de confiança, que conhece a cidade. Não precisa de aplicativo nem cadastro, é só chamar.</p>' +
         '<ol class="passos">' +
           "<li><b>1</b><h3>Escolha o ponto</h3><p>Veja os pontos de táxi da cidade e abra o mais perto de onde você está.</p></li>" +
           "<li><b>2</b><h3>Escolha o taxista</h3><p>Cada ponto mostra os taxistas que trabalham ali, com nome e telefone.</p></li>" +

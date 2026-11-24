@@ -460,7 +460,6 @@ img { max-width: 100%; }
   font-size: clamp(2.6rem, 7vw, 6rem);
   line-height: .95;
 }
-.manifesto span { color: rgba(14, 13, 11, .32); }
 
 .passos {
   display: grid;
