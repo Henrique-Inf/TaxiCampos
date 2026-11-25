@@ -7,6 +7,7 @@ Versão em **PHP + MySQL**: pontos, taxistas, apoiadores e configurações ficam
 ## O que o site faz
 
 - **Página inicial:** lista dos pontos com o bairro escrito em cada um, busca por ponto, bairro, taxista ou carro, e o filtro **"Perto de mim"**, que ordena os pontos pela distância.
+- **Ver no mapa:** botão na página inicial que troca a lista por um mapa (OpenStreetMap) com um alfinete por ponto. Alfinetes próximos viram uma bolinha "N pontos"; cada alfinete abre "Ver taxistas" e "Como chegar".
 - **Página do ponto** (`#/ponto/<id>`): taxistas em ordem sorteada a cada visita, para ninguém ficar sempre no topo, e o botão **Como chegar** (Google Maps).
 - **Apoiadores** (`#/apoiadores`): empresas que apoiam o site, sem ligação com os taxistas, e quadradinhos "Tenha sua empresa aqui" que abrem o WhatsApp.
 - **Pagamentos por Pix** (páginas sem link no site):
@@ -29,7 +30,7 @@ Versão em **PHP + MySQL**: pontos, taxistas, apoiadores e configurações ficam
 | `inc/instalacao.php`, `instalar.php` | Instalador |
 | `inc/config.php` | **Senha do banco.** Criado pelo instalador e **fora do Git** |
 | `ferramentas/empacotar.py` | Gera o pacote de instalação |
-| `fontes/`, `icones/`, `vendor/` | Fontes (OFL), ícones e gerador de QR Code (MIT) |
+| `fontes/`, `icones/`, `vendor/` | Fontes (OFL), ícones, gerador de QR Code (MIT) e mapa: Leaflet (BSD-2) e Leaflet.markercluster (MIT), dados © colaboradores do OpenStreetMap |
 | `fotos/`, `apoiadores/` | Fotos dos taxistas e logos dos apoiadores |
 
 A pasta `inc/` é bloqueada pelo `.htaccess`: ninguém consegue abrir esses arquivos pelo navegador.
