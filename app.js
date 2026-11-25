@@ -182,8 +182,18 @@
       }
       enquadrar();
       mapa.addLayer(grupo);
-      // se a área do mapa mudar de tamanho logo depois de aparecer, enquadra de novo
-      setTimeout(enquadrar, 250);
+      // se o mapa foi montado sem tamanho (aba em segundo plano, tela girando…),
+      // enquadra de novo assim que ele ganhar tamanho de verdade
+      var semTamanho = function () { var t = mapa.getSize(); return t.x < 50 || t.y < 50; };
+      var pendente = semTamanho();
+      function conferirTamanho() {
+        mapa.invalidateSize();
+        if (pendente && !semTamanho()) { pendente = false; enquadrar(); }
+        else if (semTamanho()) pendente = true;
+      }
+      setTimeout(conferirTamanho, 250);
+      if (window.ResizeObserver) new ResizeObserver(conferirTamanho).observe(el);
+      else window.addEventListener("resize", conferirTamanho);
     }, function () {
       el.innerHTML = '<p class="mapa__carregando">Não consegui carregar o mapa. Confira a internet e tente de novo.</p>';
     });
