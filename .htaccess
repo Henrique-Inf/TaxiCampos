@@ -1,0 +1,32 @@
+# TaxiCampos — configurações do servidor (Apache)
+
+# Página inicial
+DirectoryIndex index.php
+
+# Não listar o conteúdo das pastas
+Options -Indexes
+
+# Bloqueia arquivos que não devem ser abertos pelo navegador
+<FilesMatch "(^\.|\.(sql|md|json|token|zip|log|bak)$)">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Tipos de arquivo
+AddType application/manifest+json .webmanifest
+AddType font/woff2 .woff2
+
+# Cache: fontes e ícones mudam pouco; páginas e dados, sempre atualizados
+<IfModule mod_headers.c>
+  <FilesMatch "\.(woff2|png|jpg|jpeg|svg)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.(php|js|css)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

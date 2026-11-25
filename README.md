@@ -1,105 +1,66 @@
 # 🚕 TaxiCampos
 
-Site de contatos de táxi de Campos do Jordão. Mostra os **pontos de táxi** (nome e número). Dentro de cada ponto aparecem os **taxistas**, cada um com foto, nome, modelo do carro e telefone, e dois botões:
+Site de contatos de táxi de **Campos do Jordão**. Mostra os pontos de táxi separados por bairro (Abernéssia, Jaguaribe, Capivari). Em cada ponto aparecem os taxistas, com botões de **WhatsApp** (mensagem pronta) e **Ligar**.
 
-- **WhatsApp**: abre a conversa com a mensagem pronta *"Olá, {nome}! Peguei seu contato no TaxiCampos ({ponto}) e gostaria de solicitar uma corrida."*
-- **Ligar**: liga direto para o taxista.
+Versão em **PHP + MySQL**: pontos, taxistas, apoiadores e configurações ficam num banco de dados.
 
-A página inicial tem uma busca por ponto, taxista ou carro.
+## O que o site faz
 
-## Como editar os contatos
+- **Página inicial:** pontos agrupados por bairro, filtros, busca por ponto, bairro, taxista ou carro, e o filtro **"Perto de mim"**, que ordena os pontos pela distância.
+- **Página do ponto** (`#/ponto/<id>`): taxistas em ordem sorteada a cada visita, para ninguém ficar sempre no topo, e o botão **Como chegar** (Google Maps).
+- **Apoiadores** (`#/apoiadores`): empresas que apoiam o site, sem ligação com os taxistas, e quadradinhos "Tenha sua empresa aqui" que abrem o WhatsApp.
+- **Pagamentos por Pix** (páginas sem link no site):
+  - `#/pagamento`: mensalidade dos taxistas (R$ 20,00).
+  - `#/apoiador`: apoio anual das empresas (R$ 200,00).
 
-Todos os dados ficam em **`dados.js`**. Para adicionar um ponto ou um taxista, copie um bloco que já existe e troque os valores. No topo do arquivo há a explicação de cada campo.
+  O QR Code e o "copia e cola" são gerados no navegador, no padrão do Banco Central. O site não guarda nenhum dado bancário.
+- **App instalável e funcionamento sem internet:** `manifest.webmanifest` e `sw.js`. Isso não funciona em hospedagem grátis com bloqueio de robôs, como a InfinityFree.
 
-- **Telefone**: escreva como quiser, por exemplo `(12) 99999-0000`. O site tira a formatação e acrescenta o +55 sozinho. Se o número não tiver DDD, usa o DDD padrão (`12`).
-- **Foto**: coloque a imagem na pasta `fotos/` e preencha `foto: "fotos/nome-do-arquivo.jpg"`. Sem foto, aparecem as iniciais do nome. Use fotos quadradas de uns 300×300 px.
-- **Mensagem do WhatsApp**: mude o campo `mensagemWhatsapp`. `{nome}` vira o primeiro nome do taxista e `{ponto}` vira o nome do ponto.
+## Estrutura
 
-> Os campos `carro` e `foto` ainda estão vazios. Preencha conforme for juntando as informações. Enquanto isso, o site mostra as iniciais no lugar da foto e esconde a linha do carro.
+| Caminho | O que é |
+|---|---|
+| `index.php` | Página do site. Lê o banco e entrega os dados para o `app.js` |
+| `app.js`, `estilo.css` | Telas, regras e visual |
+| `inc/db.php` | Conexão com o banco (PDO) |
+| `inc/dados.php` | Lê pontos, taxistas, apoiadores e configurações do banco |
+| `inc/estrutura.sql` | Tabelas do banco |
+| `inc/dados-iniciais.json` | Dados importados na instalação (9 pontos, 67 taxistas, 1 apoiador) |
+| `inc/instalacao.php`, `instalar.php` | Instalador |
+| `inc/config.php` | **Senha do banco.** Criado pelo instalador e **fora do Git** |
+| `ferramentas/empacotar.py` | Gera o pacote de instalação |
+| `fontes/`, `icones/`, `vendor/` | Fontes (OFL), ícones e gerador de QR Code (MIT) |
+| `fotos/`, `apoiadores/` | Fotos dos taxistas e logos dos apoiadores |
 
-## Regiões (bairros)
+A pasta `inc/` é bloqueada pelo `.htaccess`: ninguém consegue abrir esses arquivos pelo navegador.
 
-Cada ponto pode ter uma `regiao` no `dados.js`, por exemplo `"regiao": "Capivari"`. Quando pelo menos um ponto tem região, a página inicial agrupa os pontos por bairro e mostra botões para filtrar ("Todas", "Abernéssia", "Jaguaribe", "Capivari"…). Pontos sem região aparecem em "Outros pontos". A ordem dos bairros vem da lista `regioes`, no começo do `dados.js`.
+### Banco de dados
 
-## Como chegar e "Perto de mim"
+- `pontos`: slug (usado no link), número, nome, região, endereço, telefone, mapa, latitude e longitude, ordem e se está ativo.
+- `taxistas`: ponto, nome, carro, telefone, WhatsApp, foto, ordem e se está ativo.
+- `apoiadores`: nome, logo, descrição, site, ordem e se está ativo.
+- `configuracoes`: cidade, DDD, bairros, mensagem do WhatsApp, Pix e contato dos apoiadores, guardados em JSON.
+- `usuarios`: logins do painel `/admin`, com senha guardada só como hash.
 
-Cada ponto aceita três campos opcionais no `dados.js`:
+## Instalar numa hospedagem PHP (InfinityFree, Hostinger…)
 
-- `mapa`: link do ponto no Google Maps. Ativa o botão **Como chegar** na página do ponto. Sem link, o botão usa as coordenadas ou o `endereco`.
-- `lat` e `lng`: latitude e longitude, por exemplo `"-22.7395"` e `"-45.5913"`. Com pelo menos um ponto preenchido, aparece o botão **Perto de mim** na página inicial, que pede a localização do celular e ordena os pontos pela distância.
+1. **Gerar o pacote** (no computador, com Python 3):
+   ```
+   python3 ferramentas/empacotar.py
+   ```
+   Saem dois arquivos em `dist/`: `taxicampos-site.zip` e `instalar.php`. O comando também mostra um **TOKEN**.
+2. **Criar o banco** no painel da hospedagem, em *MySQL Databases*, e anotar servidor, nome do banco, usuário e senha.
+3. **Enviar os 2 arquivos** de `dist/` para a pasta do site (`htdocs` na InfinityFree), pelo gerenciador de arquivos ou FTP. Apague o `index2.html` que a hospedagem cria.
+4. **Abrir** `https://SEU-SITE/instalar.php?token=TOKEN`, preencher os dados do banco e clicar em **Instalar**.
 
-Para pegar as coordenadas no Google Maps: segure o dedo no local do ponto e os números aparecem no topo.
+O instalador descompacta o site, grava o `inc/config.php`, cria as tabelas, importa os dados e **se apaga sozinho**.
 
-## Ordem dos taxistas
+## Requisitos
 
-Toda vez que alguém abre um ponto, a lista de taxistas aparece numa ordem diferente, sorteada na hora, para ninguém ficar sempre no topo. No `dados.js` a ordem não importa.
-
-## App no celular e sem internet
-
-O site pode ser instalado na tela inicial do celular, como um app. No Android aparece um aviso "Instale o TaxiCampos". No iPhone, o aviso explica como fazer pelo botão Compartilhar do Safari. Depois da primeira visita, o site abre mesmo sem internet, com os contatos da última vez que carregou. Isso é feito pelos arquivos `manifest.webmanifest`, `sw.js` e pelos ícones da pasta `icones/`.
-
-## Prévia ao compartilhar o link
-
-Ao mandar o link no WhatsApp ou nas redes, aparece a imagem `icones/compartilhar.png` com título e descrição. As tags ficam no `<head>` do `index.html`. Quando o site tiver domínio próprio, troque o endereço da `og:image` pelo do domínio.
-
-## Página de pagamento da mensalidade (`/#/pagamento`)
-
-Página sem link no site, para os taxistas pagarem a mensalidade. Ela mostra um QR Code e o "Pix copia e cola" já com o valor, e um botão que abre o WhatsApp com a mensagem "Paguei a mensalidade… Taxista: X, Ponto: Y" para mandar o comprovante.
-
-- Chave Pix, valor, nome, cidade e WhatsApp do comprovante ficam em `pagamento`, no `dados.js`.
-- O código Pix é gerado no próprio navegador, no padrão do Banco Central (BR Code). O site não guarda nem recebe nenhum dado bancário ou de cartão.
-- O QR Code é desenhado pela biblioteca `vendor/qrcode.js` (Kazuhiko Arase, licença MIT).
-- A página não tem link no site e pede para não aparecer em buscadores, mas qualquer pessoa com o endereço consegue abrir. Ela só mostra a chave Pix.
-
-## Página de pagamento dos apoiadores (`/#/apoiador`)
-
-Igual à da mensalidade, mas para as empresas apoiadoras: R$ 200,00 por ano, com a descrição "Apoio anual TaxiCampos". No lugar da lista de taxistas, a empresa escreve o próprio nome, e o botão abre o WhatsApp com "Paguei o apoio anual… Empresa: X". Usa a mesma chave Pix e o mesmo WhatsApp da mensalidade. O valor e a descrição ficam em `pagamentoApoiador`, no `dados.js`.
-
-## Apoiadores
-
-Os apoiadores aparecem na página **Apoiadores** (link no topo do site) e no rodapé de todas as páginas. Eles ficam no fim do `dados.js`, na lista `apoiadores`:
-
-```js
-apoiadores: [
-  {
-    nome: "Padaria Serrana",
-    logo: "apoiadores/padaria.png",          // opcional: sem logo, aparece o nome
-    descricao: "Padaria e confeitaria",       // opcional
-    site: "https://instagram.com/padaria"     // opcional: link do site ou Instagram
-  }
-]
-```
-
-Coloque os logos na pasta `apoiadores/`. Funcionam melhor em PNG com fundo transparente.
-
-Junto dos apoiadores aparecem quadradinhos **"Tenha sua empresa aqui"**, que abrem o WhatsApp de quem cuida do site com uma mensagem pronta. O número e a mensagem ficam em `contatoApoio`, no `dados.js`. A página deixa claro que os apoiadores apoiam o site, e não os taxistas.
-
-## Como ver no computador
-
-Abra o arquivo `index.html` no navegador. Não precisa instalar nada.
-
-## Como publicar (GitHub Pages, grátis)
-
-1. No GitHub, abra **Settings → Pages**.
-2. Em *Source*, escolha **Deploy from a branch**, branch `main`, pasta `/ (root)`, e clique em **Save**.
-3. Em um ou dois minutos o site fica no ar em `https://henrique-inf.github.io/TaxiCampos/`.
-
-## Arquivos
-
-| Arquivo      | O que é                                   |
-|--------------|-------------------------------------------|
-| `index.html` | Estrutura da página                       |
-| `estilo.css` | Visual (cores, layout, botões)            |
-| `app.js`     | Lógica: lista, busca, links de WhatsApp e ligação |
-| `dados.js`   | **Pontos e taxistas**: é aqui que se edita |
-| `fotos/`     | Fotos dos taxistas                        |
-| `apoiadores/`| Logos dos apoiadores                      |
-| `icones/`    | Ícones do app e imagem de prévia          |
-| `vendor/`    | Gerador de QR Code (página de pagamento)  |
-| `sw.js`, `manifest.webmanifest` | App instalável e funcionamento sem internet |
-| `fontes/`    | Fontes Big Shoulders Display e Schibsted Grotesk (licença OFL) |
+PHP 8.0 ou mais novo, com PDO MySQL e ZipArchive, MySQL 5.7+ ou MariaDB 10.3+, e Apache com `.htaccess`.
 
 ## Créditos
 
-- Fontes: [Big Shoulders Display](https://fonts.google.com/specimen/Big+Shoulders+Display) e [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk), licença SIL Open Font License.
-- Fotos de fundo (Unsplash, carregadas direto de lá): placa de táxi por [Waldemar Brandt](https://unsplash.com/photos/kYbYIWdJRh0), Serra da Mantiqueira por [Regiany Almeida](https://unsplash.com/photos/TfpxVQhVzJU) e chalé em Campos do Jordão por [Gabriel Ramos](https://unsplash.com/photos/GXcy_NMBvIo).
+- Fontes: [Big Shoulders Display](https://fonts.google.com/specimen/Big+Shoulders+Display) e [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk) (SIL Open Font License).
+- QR Code: [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), de Kazuhiko Arase (MIT).
+- Fotos de fundo (Unsplash): [Waldemar Brandt](https://unsplash.com/photos/kYbYIWdJRh0), [Regiany Almeida](https://unsplash.com/photos/TfpxVQhVzJU) e [Gabriel Ramos](https://unsplash.com/photos/GXcy_NMBvIo).

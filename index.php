@@ -1,4 +1,34 @@
-<!DOCTYPE html>
+<?php
+/*
+ * TaxiCampos — página principal.
+ * Os dados (pontos, taxistas, apoiadores, Pix...) vêm do banco de dados
+ * e entram na página como window.TAXI_DADOS, o mesmo formato que o app.js usa.
+ */
+declare(strict_types=1);
+
+require __DIR__ . '/inc/dados.php';
+
+try {
+    $json = taxi_json_script(taxi_carregar_dados(taxi_db()));
+} catch (Throwable $e) {
+    error_log('TaxiCampos: ' . $e->getMessage());
+    http_response_code(503);
+    header('Retry-After: 300');
+    $semConfig = !is_file(TAXI_CONFIG);
+    ?><!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaxiCampos</title><link rel="stylesheet" href="estilo.css"></head>
+<body><section class="topo-simples"><p class="rotulo">TaxiCampos</p>
+<h1 class="display topo-simples__titulo">Já <span class="amarelo">voltamos</span></h1>
+<p class="topo-simples__texto"><?= $semConfig
+    ? 'O site ainda está sendo instalado.'
+    : 'O site está passando por uma manutenção rápida. Tente de novo em alguns minutos.' ?></p>
+</section></body></html><?php
+    exit;
+}
+
+header('Content-Type: text/html; charset=utf-8');
+?><!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -62,7 +92,7 @@
     <form method="dialog"><button class="btn btn--amarelo">Entendi</button></form>
   </dialog>
 
-  <script src="dados.js"></script>
+  <script>window.TAXI_DADOS = <?= $json ?>;</script>
   <script src="app.js"></script>
 </body>
 </html>

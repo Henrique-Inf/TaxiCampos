@@ -2,19 +2,17 @@
  * Service worker do TaxiCampos: deixa o site abrir mesmo sem internet
  * (ou com sinal fraco na serra) e permite instalar como app.
  *
- * - Páginas, CSS, JS e dados.js: busca primeiro na internet (para ter sempre
+ * - Páginas (index.php, com os dados do banco), CSS e JS: busca primeiro na internet (para ter sempre
  *   os contatos atualizados) e usa a cópia guardada se estiver sem sinal.
  * - Fontes, ícones, fotos e logos: usa a cópia guardada (mais rápido).
  *
  * Ao mudar a lista de arquivos abaixo, aumente o número da VERSAO.
  */
-var VERSAO = "taxicampos-v2";
+var VERSAO = "taxicampos-v3";
 var ARQUIVOS = [
   "./",
-  "index.html",
   "estilo.css",
   "app.js",
-  "dados.js",
   "manifest.webmanifest",
   "fontes/big-shoulders-display-latin-700-normal.woff2",
   "fontes/big-shoulders-display-latin-800-normal.woff2",

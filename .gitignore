@@ -1,0 +1,6 @@
+# Configuração com a senha do banco: nunca vai para o GitHub
+inc/config.php
+
+# Pacotes de instalação gerados por ferramentas/empacotar.py
+dist/
+*.zip
