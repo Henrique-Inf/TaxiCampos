@@ -149,7 +149,6 @@
           });
         }
       });
-      mapa.addLayer(grupo);
 
       var limites = [];
       pontos.forEach(function (p) {
@@ -175,8 +174,16 @@
         limites.push([minhaPosicao.lat, minhaPosicao.lng]);
       }
 
-      if (limites.length) mapa.fitBounds(limites, { padding: [40, 40], maxZoom: 16 });
-      else mapa.setView([-22.733, -45.584], 14);
+      // primeiro enquadra todos os pontos, depois coloca os alfinetes (o agrupador precisa do zoom definido)
+      function enquadrar() {
+        mapa.invalidateSize();
+        if (limites.length) mapa.fitBounds(limites, { padding: [40, 40], maxZoom: 16 });
+        else mapa.setView([-22.733, -45.584], 14);
+      }
+      enquadrar();
+      mapa.addLayer(grupo);
+      // se a área do mapa mudar de tamanho logo depois de aparecer, enquadra de novo
+      setTimeout(enquadrar, 250);
     }, function () {
       el.innerHTML = '<p class="mapa__carregando">Não consegui carregar o mapa. Confira a internet e tente de novo.</p>';
     });
