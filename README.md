@@ -63,5 +63,6 @@ PHP 8.0 ou mais novo, com PDO MySQL e ZipArchive, MySQL 5.7+ ou MariaDB 10.3+, e
 ## Créditos
 
 - Fontes: [Big Shoulders Display](https://fonts.google.com/specimen/Big+Shoulders+Display) e [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk) (SIL Open Font License).
+- Mapa: [Leaflet](https://leafletjs.com) (BSD-2), [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster) (MIT) e dados do [OpenStreetMap](https://www.openstreetmap.org/copyright).
 - QR Code: [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), de Kazuhiko Arase (MIT).
 - Fotos de fundo (Unsplash): [Waldemar Brandt](https://unsplash.com/photos/kYbYIWdJRh0), [Regiany Almeida](https://unsplash.com/photos/TfpxVQhVzJU) e [Gabriel Ramos](https://unsplash.com/photos/GXcy_NMBvIo).
