@@ -334,7 +334,7 @@ img { max-width: 100%; }
 }
 
 /* =========================================================
-   Regiões (filtros e grupos)
+   Filtros (Perto de mim)
    ========================================================= */
 
 .filtros {
@@ -371,6 +371,19 @@ img { max-width: 100%; }
 .filtro svg { width: 16px; height: 16px; flex: none; }
 .filtro--perto { border-color: rgba(255, 196, 0, .5); }
 .aviso-local { margin: -14px 0 24px; color: var(--amarelo); font-size: .92rem; }
+.ponto__topo { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.ponto__bairro {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--creme-suave);
+  transition: color .25s;
+}
+.ponto__bairro svg { width: 14px; height: 14px; color: var(--amarelo); transition: color .25s; }
+.ponto:hover .ponto__bairro, .ponto:focus-visible .ponto__bairro,
+.ponto:hover .ponto__bairro svg, .ponto:focus-visible .ponto__bairro svg { color: var(--noite); }
 .ponto__distancia {
   display: inline-flex;
   align-items: center;
@@ -385,30 +398,6 @@ img { max-width: 100%; }
 .ponto:hover .ponto__distancia svg, .ponto:focus-visible .ponto__distancia svg { color: var(--noite); }
 .filtro[aria-pressed="true"] { background: var(--amarelo); border-color: var(--amarelo); color: var(--noite); }
 .filtro[aria-pressed="true"] span { background: rgba(14, 13, 11, .15); }
-
-.regiao + .regiao { margin-top: clamp(44px, 6vw, 72px); }
-.regiao__titulo {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 0 0 18px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--linha);
-  font-family: var(--display);
-  font-weight: 900;
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  line-height: .9;
-  text-transform: uppercase;
-}
-.regiao__titulo svg { width: .55em; height: .55em; color: var(--amarelo); align-self: center; flex: none; }
-.regiao__titulo small {
-  font-family: var(--texto);
-  font-size: .9rem;
-  font-weight: 500;
-  text-transform: none;
-  color: var(--creme-fraco);
-}
 
 .topo-ponto__regiao {
   display: inline-flex;
@@ -435,6 +424,7 @@ img { max-width: 100%; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 20px;
   min-height: 230px;
   padding: 24px;
   border-radius: var(--raio);

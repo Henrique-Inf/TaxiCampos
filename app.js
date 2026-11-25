@@ -72,23 +72,7 @@
 
   var apoiadores = (dados.apoiadores || []).filter(function (a) { return a && a.nome; });
 
-  // Agrupa os pontos por região, na ordem de dados.regioes; sem região vai para o fim
-  function agruparPorRegiao(lista) {
-    var ordem = (dados.regioes || []).slice();
-    var grupos = {};
-    lista.forEach(function (p) {
-      var r = regiaoDe(p);
-      (grupos[r] = grupos[r] || []).push(p);
-      if (r && ordem.indexOf(r) === -1) ordem.push(r);
-    });
-    var saida = ordem.filter(function (r) { return grupos[r]; })
-      .map(function (r) { return { nome: r, pontos: grupos[r] }; });
-    if (grupos[""]) saida.push({ nome: "", pontos: grupos[""] });
-    return saida;
-  }
-
-  var temRegioes = pontos.some(function (p) { return regiaoDe(p); });
-  var regiaoAtiva = null; // null = todas, "perto" = ordenado pela distância
+  var regiaoAtiva = null; // null = ordem normal, "perto" = ordenado pela distância
 
   /* ---------- mapa e distância ---------- */
 
@@ -144,14 +128,17 @@
 
   function regiaoDe(ponto) { return String(ponto.regiao || "").trim(); }
 
-  function cartaoPonto(ponto, mostrarRegiao, distancia) {
+  function cartaoPonto(ponto, distancia) {
     var qtd = (ponto.taxistas || []).length;
-    var regiao = mostrarRegiao ? regiaoDe(ponto) : "";
+    var regiao = regiaoDe(ponto);
     return (
       '<a class="ponto" href="#/ponto/' + encodeURIComponent(ponto.id) + '">' +
         '<span class="ponto__numero" aria-hidden="true">' + esc(ponto.numero) + "</span>" +
-        '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + (regiao ? " · " + esc(regiao) : "") + "</span>" +
-        (distancia != null ? '<span class="ponto__distancia">' + ICONE_PINO + textoDistancia(distancia) + "</span>" : "") +
+        '<span class="ponto__topo">' +
+          '<span class="ponto__rotulo">Ponto ' + esc(ponto.numero) + "</span>" +
+          (regiao ? '<span class="ponto__bairro">' + ICONE_PINO + esc(regiao) + "</span>" : "") +
+          (distancia != null ? '<span class="ponto__distancia">' + ICONE_PINO + textoDistancia(distancia) + "</span>" : "") +
+        "</span>" +
         "<div>" +
           '<h3 class="ponto__nome">' + esc(nomeCurto(ponto)) + "</h3>" +
           '<div class="ponto__rodape">' +
@@ -355,28 +342,19 @@
       if (!q) {
         if (!pontos.length) {
           resultados.innerHTML = '<p class="vazio">Nenhum ponto cadastrado ainda.</p>';
-        } else if (!temRegioes && !temCoords) {
-          resultados.innerHTML = '<div class="grade-pontos">' +
-            pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>";
         } else {
-          var grupos = temRegioes ? agruparPorRegiao(pontos) : [{ nome: "", pontos: pontos }];
-          var chave = function (g) { return g.nome || "outros"; };
-          var filtros = '<div class="filtros" role="group" aria-label="Filtrar pontos">' +
-            (temCoords
-              ? '<button type="button" class="filtro filtro--perto" data-regiao="perto" aria-pressed="' + (regiaoAtiva === "perto") + '">' +
-                ICONE_PINO + (regiaoAtiva === "localizando" ? "Localizando…" : "Perto de mim") + "</button>"
-              : "") +
-            '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva === null) + '">' +
-              (temRegioes ? "Todas" : "Todos") + "</button>" +
-            (temRegioes ? grupos.map(function (g) {
-              return '<button type="button" class="filtro" data-regiao="' + esc(chave(g)) + '" aria-pressed="' +
-                (regiaoAtiva === chave(g)) + '">' + esc(g.nome || "Outros") + "<span>" + g.pontos.length + "</span></button>";
-            }).join("") : "") +
-          "</div>" +
-          (avisoLocal ? '<p class="aviso-local">' + esc(avisoLocal) + "</p>" : "");
+          var filtros = temCoords
+            ? '<div class="filtros" role="group" aria-label="Ordenar pontos">' +
+                '<button type="button" class="filtro filtro--perto" data-regiao="perto" aria-pressed="' + (regiaoAtiva === "perto") + '">' +
+                  ICONE_PINO + (regiaoAtiva === "localizando" ? "Localizando…" : "Perto de mim") + "</button>" +
+                '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva !== "perto") + '">Todos</button>' +
+              "</div>" +
+              (avisoLocal ? '<p class="aviso-local">' + esc(avisoLocal) + "</p>" : "")
+            : "";
 
+          var lista = pontos.map(function (p) { return { p: p, d: null }; });
           if (regiaoAtiva === "perto" && minhaPosicao) {
-            var ordenados = pontos.map(function (p) {
+            lista = pontos.map(function (p) {
               var c = coordsDe(p);
               return { p: p, d: c ? distanciaKm(minhaPosicao, c) : null };
             }).sort(function (x, y) {
@@ -384,24 +362,9 @@
               if (y.d == null) return -1;
               return x.d - y.d;
             });
-            resultados.innerHTML = filtros +
-              '<div class="grade-pontos">' + ordenados.map(function (x) { return cartaoPonto(x.p, true, x.d); }).join("") + "</div>";
-            return;
           }
-          if (!temRegioes) {
-            resultados.innerHTML = filtros + '<div class="grade-pontos">' +
-              pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>";
-            return;
-          }
-          resultados.innerHTML = filtros + grupos
-            .filter(function (g) { return regiaoAtiva === null || regiaoAtiva === "localizando" || regiaoAtiva === chave(g); })
-            .map(function (g) {
-              return '<div class="regiao">' +
-                '<h3 class="regiao__titulo">' + ICONE_PINO + "<span>" + esc(g.nome || "Outros pontos") + "</span>" +
-                  '<small>' + plural(g.pontos.length, "ponto", "pontos") + "</small></h3>" +
-                '<div class="grade-pontos">' + g.pontos.map(function (p) { return cartaoPonto(p, false); }).join("") + "</div>" +
-              "</div>";
-            }).join("");
+          resultados.innerHTML = filtros + '<div class="grade-pontos">' +
+            lista.map(function (x) { return cartaoPonto(x.p, x.d); }).join("") + "</div>";
         }
         return;
       }
@@ -420,7 +383,7 @@
       var html = "";
       if (pontosAchados.length) {
         html += '<p class="subtitulo-lista">Pontos</p><div class="grade-pontos">' +
-          pontosAchados.map(function (p) { return cartaoPonto(p, true); }).join("") + "</div>";
+          pontosAchados.map(function (p) { return cartaoPonto(p); }).join("") + "</div>";
       }
       if (taxistasAchados.length) {
         html += '<p class="subtitulo-lista">' + plural(taxistasAchados.length, "taxista", "taxistas") + '</p><div class="grade-taxistas">' +

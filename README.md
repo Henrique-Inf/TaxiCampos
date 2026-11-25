@@ -17,9 +17,9 @@ Todos os dados ficam em **`dados.js`**. Para adicionar um ponto ou um taxista, c
 
 > Os campos `carro` e `foto` ainda estão vazios. Preencha conforme for juntando as informações. Enquanto isso, o site mostra as iniciais no lugar da foto e esconde a linha do carro.
 
-## Regiões (bairros)
+## Bairros
 
-Cada ponto pode ter uma `regiao` no `dados.js`, por exemplo `"regiao": "Capivari"`. Quando pelo menos um ponto tem região, a página inicial agrupa os pontos por bairro e mostra botões para filtrar ("Todas", "Abernéssia", "Jaguaribe", "Capivari"…). Pontos sem região aparecem em "Outros pontos". A ordem dos bairros vem da lista `regioes`, no começo do `dados.js`.
+Cada ponto tem uma `regiao` no `dados.js`, por exemplo `"regiao": "Capivari"`. O bairro aparece escrito em cada cartão, logo abaixo do "Ponto 01", e a busca também encontra o ponto pelo bairro. Os pontos ficam numa lista única, na ordem dos números.
 
 ## Como chegar e "Perto de mim"
 
