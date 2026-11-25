@@ -8,7 +8,7 @@
  *
  * Ao mudar a lista de arquivos abaixo, aumente o número da VERSAO.
  */
-var VERSAO = "taxicampos-v1";
+var VERSAO = "taxicampos-v2";
 var ARQUIVOS = [
   "./",
   "index.html",
@@ -25,7 +25,8 @@ var ARQUIVOS = [
   "icones/icone-192.png",
   "icones/icone-512.png",
   "icones/apple-touch-icon.png",
-  "icones/favicon-64.png"
+  "icones/favicon-64.png",
+  "vendor/qrcode.js"
 ];
 
 self.addEventListener("install", function (e) {

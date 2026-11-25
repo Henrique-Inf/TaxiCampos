@@ -995,3 +995,88 @@ a.rodape__logo.vaga:hover { border-style: solid; border-color: var(--amarelo); c
 .dialogo ol { margin: 0 0 22px; padding-left: 20px; display: grid; gap: 10px; color: var(--creme-suave); }
 .dialogo strong { color: var(--creme); }
 .dialogo form { display: flex; justify-content: flex-end; }
+
+/* =========================================================
+   Pagamento da mensalidade
+   ========================================================= */
+
+.pagamento { display: grid; gap: 18px; max-width: 980px; }
+
+.pix {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) 1fr;
+  gap: clamp(20px, 4vw, 44px);
+  align-items: center;
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: var(--raio);
+  background: var(--carvao);
+  border: 1px solid var(--linha);
+}
+@media (max-width: 700px) { .pix { grid-template-columns: 1fr; justify-items: center; text-align: center; } }
+
+.pix__qr {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  padding: 10px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 0 0 4px var(--amarelo);
+}
+.pix__qr svg { display: block; width: 100%; height: 100%; }
+.pix__semqr { margin: 0; color: var(--noite); font-weight: 600; padding: 20px; }
+
+.pix__valor {
+  margin: 0 0 14px;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(3.4rem, 9vw, 5rem);
+  line-height: .9;
+  color: var(--amarelo);
+}
+.pix__valor span { font-size: .4em; color: var(--creme-suave); margin-left: 6px; }
+.pix__passos { margin: 0 0 22px; padding-left: 20px; display: grid; gap: 6px; color: var(--creme-suave); text-align: left; }
+.pix__passos strong { color: var(--creme); }
+.pix__chave { margin: 16px 0 0; font-size: .9rem; color: var(--creme-suave); overflow-wrap: anywhere; }
+.pix__chave strong { color: var(--creme); }
+.pix__copiar {
+  border: 0;
+  background: none;
+  color: var(--amarelo);
+  font: 700 .9rem var(--texto);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.pix__aviso { min-height: 1.4em; margin: 10px 0 0; font-weight: 700; color: var(--verde); }
+.pix__aviso.alerta { color: var(--amarelo); }
+
+.comprovante {
+  display: grid;
+  gap: 12px;
+  padding: clamp(20px, 4vw, 36px);
+  border-radius: var(--raio);
+  background: var(--carvao);
+  border: 1px solid var(--linha);
+}
+.comprovante h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2.2rem;
+  line-height: .95;
+  text-transform: uppercase;
+}
+.comprovante p { margin: 0; color: var(--creme-suave); }
+.comprovante select {
+  height: 54px;
+  padding: 0 16px;
+  border-radius: 14px;
+  border: 1.5px solid var(--linha);
+  background: var(--noite);
+  color: var(--creme);
+  font: 500 1rem var(--texto);
+}
+.comprovante select:focus { outline: none; border-color: var(--amarelo); }
+.comprovante .btn { justify-self: start; }
+@media (max-width: 700px) { .comprovante .btn { justify-self: stretch; } }

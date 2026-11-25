@@ -42,6 +42,15 @@ O site pode ser instalado na tela inicial do celular, como um app. No Android ap
 
 Ao mandar o link no WhatsApp ou nas redes, aparece a imagem `icones/compartilhar.png` com título e descrição. As tags ficam no `<head>` do `index.html`. Quando o site tiver domínio próprio, troque o endereço da `og:image` pelo do domínio.
 
+## Página de pagamento da mensalidade (`/#/pagamento`)
+
+Página sem link no site, para os taxistas pagarem a mensalidade. Ela mostra um QR Code e o "Pix copia e cola" já com o valor, e um botão que abre o WhatsApp com a mensagem "Paguei a mensalidade… Taxista: X, Ponto: Y" para mandar o comprovante.
+
+- Chave Pix, valor, nome, cidade e WhatsApp do comprovante ficam em `pagamento`, no `dados.js`.
+- O código Pix é gerado no próprio navegador, no padrão do Banco Central (BR Code). O site não guarda nem recebe nenhum dado bancário ou de cartão.
+- O QR Code é desenhado pela biblioteca `vendor/qrcode.js` (Kazuhiko Arase, licença MIT).
+- A página não tem link no site e pede para não aparecer em buscadores, mas qualquer pessoa com o endereço consegue abrir. Ela só mostra a chave Pix.
+
 ## Apoiadores
 
 Os apoiadores aparecem na página **Apoiadores** (link no topo do site) e no rodapé de todas as páginas. Eles ficam no fim do `dados.js`, na lista `apoiadores`:
@@ -82,6 +91,7 @@ Abra o arquivo `index.html` no navegador. Não precisa instalar nada.
 | `fotos/`     | Fotos dos taxistas                        |
 | `apoiadores/`| Logos dos apoiadores                      |
 | `icones/`    | Ícones do app e imagem de prévia          |
+| `vendor/`    | Gerador de QR Code (página de pagamento)  |
 | `sw.js`, `manifest.webmanifest` | App instalável e funcionamento sem internet |
 | `fontes/`    | Fontes Big Shoulders Display e Schibsted Grotesk (licença OFL) |
 

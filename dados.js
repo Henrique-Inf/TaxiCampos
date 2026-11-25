@@ -571,6 +571,16 @@ window.TAXI_DADOS = {
     }
   ],
 
+  // Página de pagamento da mensalidade dos taxistas (endereço: /#/pagamento, sem link no site)
+  pagamento: {
+    chavePix: "henriqueromeo97@gmail.com",
+    nomeRecebedor: "TaxiCampos",      // aparece no QR Code; o banco mostra o nome real da conta na confirmação
+    cidadeRecebedor: "Campos Jordao",   // máximo de 15 letras, sem acento (padrão do Pix)
+    valor: "20.00",
+    descricao: "Mensalidade TaxiCampos",
+    whatsappComprovante: "(12) 98820-1858"
+  },
+
   // Quadradinhos "Tenha sua empresa aqui": abrem este WhatsApp com a mensagem pronta
   contatoApoio: {
     whatsapp: "(12) 98820-1858",
