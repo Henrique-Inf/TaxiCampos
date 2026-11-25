@@ -51,6 +51,10 @@ Página sem link no site, para os taxistas pagarem a mensalidade. Ela mostra um 
 - O QR Code é desenhado pela biblioteca `vendor/qrcode.js` (Kazuhiko Arase, licença MIT).
 - A página não tem link no site e pede para não aparecer em buscadores, mas qualquer pessoa com o endereço consegue abrir. Ela só mostra a chave Pix.
 
+## Página de pagamento dos apoiadores (`/#/apoiador`)
+
+Igual à da mensalidade, mas para as empresas apoiadoras: R$ 200,00 por ano, com a descrição "Apoio anual TaxiCampos". No lugar da lista de taxistas, a empresa escreve o próprio nome, e o botão abre o WhatsApp com "Paguei o apoio anual… Empresa: X". Usa a mesma chave Pix e o mesmo WhatsApp da mensalidade. O valor e a descrição ficam em `pagamentoApoiador`, no `dados.js`.
+
 ## Apoiadores
 
 Os apoiadores aparecem na página **Apoiadores** (link no topo do site) e no rodapé de todas as páginas. Eles ficam no fim do `dados.js`, na lista `apoiadores`:

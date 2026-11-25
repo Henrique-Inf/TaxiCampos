@@ -557,7 +557,7 @@
       campoPix("58", "BR") +
       campoPix("59", textoPix(cfg.nomeRecebedor || "TaxiCampos", 25) || "TaxiCampos") +
       campoPix("60", textoPix(cfg.cidadeRecebedor || "Campos do Jordao", 15) || "Campos do Jordao") +
-      campoPix("62", campoPix("05", "TAXICAMPOS")) +
+      campoPix("62", campoPix("05", textoPix(cfg.identificador, 25).replace(/[^A-Za-z0-9]/g, "") || "TAXICAMPOS")) +
       "6304";
     return corpo + crc16(corpo);
   }
@@ -584,9 +584,15 @@
     });
   }
 
-  function telaPagamento() {
-    document.title = "Mensalidade — TaxiCampos";
-    var cfg = dados.pagamento || {};
+  // paraApoiador = true → página #/apoiador (apoio anual das empresas); senão, mensalidade dos taxistas
+  function telaPagamento(paraApoiador) {
+    var cfg = {};
+    var base = dados.pagamento || {};
+    var extra = paraApoiador ? (dados.pagamentoApoiador || {}) : {};
+    for (var k in base) cfg[k] = base[k];
+    for (var k2 in extra) cfg[k2] = extra[k2];
+    var periodo = paraApoiador ? "ano" : "mês";
+    document.title = (paraApoiador ? "Apoio anual" : "Mensalidade") + " — TaxiCampos";
     if (!cfg.chavePix) {
       app.innerHTML = '<section class="topo-simples"><h1 class="display topo-simples__titulo">Pagamento</h1>' +
         '<p class="topo-simples__texto">A chave Pix ainda não foi configurada.</p></section>';
@@ -595,7 +601,7 @@
     var codigo = codigoPix(cfg);
     var valorTexto = "R$ " + (parseFloat(String(cfg.valor).replace(",", ".")) || 0).toFixed(2).replace(".", ",");
 
-    var opcoes = '<option value="">Escolha seu nome</option>' + pontos.map(function (p) {
+    var opcoes = paraApoiador ? "" : '<option value="">Escolha seu nome</option>' + pontos.map(function (p) {
       var nomes = (p.taxistas || []).slice().sort(function (x, y) { return x.nome.localeCompare(y.nome, "pt-BR"); });
       return '<optgroup label="' + esc("Ponto " + p.numero + " · " + nomeCurto(p)) + '">' +
         nomes.map(function (t) {
@@ -605,17 +611,22 @@
 
     app.innerHTML =
       '<section class="topo-simples">' +
-        '<p class="rotulo">Área do taxista</p>' +
-        '<h1 class="display topo-simples__titulo">Mensa<span class="amarelo">lidade</span></h1>' +
-        '<p class="topo-simples__texto">' + esc(valorTexto) + " por mês para manter seu contato no TaxiCampos. " +
-          "Pague pelo Pix e mande o comprovante pelo WhatsApp.</p>" +
+        (paraApoiador
+          ? '<p class="rotulo">Área do apoiador</p>' +
+            '<h1 class="display topo-simples__titulo">Apoio <span class="amarelo">anual</span></h1>' +
+            '<p class="topo-simples__texto">' + esc(valorTexto) + " por ano para ter sua empresa na página de apoiadores e no rodapé do TaxiCampos. " +
+              "Pague pelo Pix e mande o comprovante pelo WhatsApp.</p>"
+          : '<p class="rotulo">Área do taxista</p>' +
+            '<h1 class="display topo-simples__titulo">Mensa<span class="amarelo">lidade</span></h1>' +
+            '<p class="topo-simples__texto">' + esc(valorTexto) + " por mês para manter seu contato no TaxiCampos. " +
+              "Pague pelo Pix e mande o comprovante pelo WhatsApp.</p>") +
       "</section>" +
       '<div class="xadrez xadrez--fina" aria-hidden="true"></div>' +
       '<section class="secao pagamento">' +
         '<div class="pix">' +
           '<div class="pix__qr" id="pix-qr" aria-label="QR Code do Pix"></div>' +
           '<div class="pix__info">' +
-            '<p class="pix__valor">' + esc(valorTexto) + "<span>/mês</span></p>" +
+            '<p class="pix__valor">' + esc(valorTexto) + "<span>/" + periodo + "</span></p>" +
             '<ol class="pix__passos">' +
               "<li>Abra o app do seu banco e vá em <strong>Pix</strong>.</li>" +
               "<li>Escolha <strong>Ler QR Code</strong> ou <strong>Pix copia e cola</strong>.</li>" +
@@ -629,9 +640,13 @@
         "</div>" +
         '<form class="comprovante" id="form-comprovante">' +
           "<h2>Depois de pagar</h2>" +
-          "<p>Escolha seu nome e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
-          '<label for="quem" class="sr-only">Seu nome</label>' +
-          '<select id="quem">' + opcoes + "</select>" +
+          (paraApoiador
+            ? "<p>Escreva o nome da sua empresa e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
+              '<label for="quem" class="sr-only">Nome da empresa</label>' +
+              '<input id="quem" type="text" placeholder="Nome da empresa" autocomplete="organization" maxlength="80">'
+            : "<p>Escolha seu nome e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
+              '<label for="quem" class="sr-only">Seu nome</label>' +
+              '<select id="quem">' + opcoes + "</select>") +
           '<button type="submit" class="btn btn--whats">' + ICONE_WHATS + "<span>Enviar comprovante</span></button>" +
           '<p class="pix__aviso" id="aviso-comprovante" role="status"></p>' +
         "</form>" +
@@ -650,14 +665,24 @@
 
     document.getElementById("form-comprovante").addEventListener("submit", function (e) {
       e.preventDefault();
-      var escolha = document.getElementById("quem").value;
+      var escolha = document.getElementById("quem").value.trim();
       var avisoC = document.getElementById("aviso-comprovante");
-      if (!escolha) { avisoC.classList.add("alerta"); avisar(avisoC, "Escolha seu nome na lista."); return; }
+      if (!escolha) {
+        avisoC.classList.add("alerta");
+        avisar(avisoC, paraApoiador ? "Escreva o nome da sua empresa." : "Escolha seu nome na lista.");
+        return;
+      }
       avisoC.textContent = "";
-      var partes = escolha.split("|");
       var numero = numeroInternacional(cfg.whatsappComprovante || (dados.contatoApoio || {}).whatsapp);
-      var msg = "Olá! Paguei a mensalidade do TaxiCampos (" + valorTexto + ").\n" +
-        "Taxista: " + partes[0] + "\nPonto: " + partes[1] + "\nSegue o comprovante:";
+      var msg;
+      if (paraApoiador) {
+        msg = "Olá! Paguei o apoio anual do TaxiCampos (" + valorTexto + ").\n" +
+          "Empresa: " + escolha + "\nSegue o comprovante:";
+      } else {
+        var partes = escolha.split("|");
+        msg = "Olá! Paguei a mensalidade do TaxiCampos (" + valorTexto + ").\n" +
+          "Taxista: " + partes[0] + "\nPonto: " + partes[1] + "\nSegue o comprovante:";
+      }
       window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
     });
 
@@ -683,13 +708,15 @@
     var m = hash.match(/^ponto\/(.+)$/);
     if (m) telaPonto(decodeURIComponent(m[1]));
     else if (hash === "apoiadores") telaApoiadores();
-    else if (hash === "pagamento") telaPagamento();
+    else if (hash === "pagamento") telaPagamento(false);
+    else if (hash === "apoiador") telaPagamento(true);
     else telaInicio();
-    renderRodape(hash !== "apoiadores" && hash !== "pagamento");
+    var paginaPagamento = hash === "pagamento" || hash === "apoiador";
+    renderRodape(hash !== "apoiadores" && !paginaPagamento);
 
     // a página de pagamento não deve aparecer em buscadores
     var robots = document.querySelector('meta[name="robots"]');
-    if (hash === "pagamento") {
+    if (paginaPagamento) {
       if (!robots) {
         robots = document.createElement("meta");
         robots.name = "robots";

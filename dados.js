@@ -578,7 +578,16 @@ window.TAXI_DADOS = {
     cidadeRecebedor: "Campos Jordao",   // máximo de 15 letras, sem acento (padrão do Pix)
     valor: "20.00",
     descricao: "Mensalidade TaxiCampos",
+    identificador: "TAXICAMPOS",        // aparece no extrato do banco; só letras e números
     whatsappComprovante: "(12) 98820-1858"
+  },
+
+  // Página de pagamento do apoio anual das empresas (endereço: /#/apoiador, sem link no site).
+  // Usa a mesma chave Pix e o mesmo WhatsApp da mensalidade; aqui ficam só as diferenças.
+  pagamentoApoiador: {
+    valor: "200.00",
+    descricao: "Apoio anual TaxiCampos",
+    identificador: "TAXICAMPOSAPOIO"
   },
 
   // Quadradinhos "Tenha sua empresa aqui": abrem este WhatsApp com a mensagem pronta
