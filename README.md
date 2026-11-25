@@ -1,12 +1,12 @@
 # 🚕 TaxiCampos
 
-Site de contatos de táxi de **Campos do Jordão**. Mostra os pontos de táxi separados por bairro (Abernéssia, Jaguaribe, Capivari). Em cada ponto aparecem os taxistas, com botões de **WhatsApp** (mensagem pronta) e **Ligar**.
+Site de contatos de táxi de **Campos do Jordão**. Mostra os pontos de táxi, cada um com o seu bairro (Abernéssia, Jaguaribe, Capivari). Em cada ponto aparecem os taxistas, com botões de **WhatsApp** (mensagem pronta) e **Ligar**.
 
 Versão em **PHP + MySQL**: pontos, taxistas, apoiadores e configurações ficam num banco de dados.
 
 ## O que o site faz
 
-- **Página inicial:** pontos agrupados por bairro, filtros, busca por ponto, bairro, taxista ou carro, e o filtro **"Perto de mim"**, que ordena os pontos pela distância.
+- **Página inicial:** lista dos pontos com o bairro escrito em cada um, busca por ponto, bairro, taxista ou carro, e o filtro **"Perto de mim"**, que ordena os pontos pela distância.
 - **Página do ponto** (`#/ponto/<id>`): taxistas em ordem sorteada a cada visita, para ninguém ficar sempre no topo, e o botão **Como chegar** (Google Maps).
 - **Apoiadores** (`#/apoiadores`): empresas que apoiam o site, sem ligação com os taxistas, e quadradinhos "Tenha sua empresa aqui" que abrem o WhatsApp.
 - **Pagamentos por Pix** (páginas sem link no site):
