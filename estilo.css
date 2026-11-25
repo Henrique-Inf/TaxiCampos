@@ -370,6 +370,8 @@ img { max-width: 100%; }
 .filtro:hover { border-color: var(--amarelo); }
 .filtro svg { width: 16px; height: 16px; flex: none; }
 .filtro--perto { border-color: rgba(255, 196, 0, .5); }
+.filtro--mapa { margin-left: auto; }
+@media (max-width: 480px) { .filtro--mapa { margin-left: 0; } }
 .aviso-local { margin: -14px 0 24px; color: var(--amarelo); font-size: .92rem; }
 .ponto__topo { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 .ponto__bairro {
@@ -1073,3 +1075,100 @@ a.rodape__logo.vaga:hover { border-style: solid; border-color: var(--amarelo); c
 .comprovante select:focus { outline: none; border-color: var(--amarelo); }
 .comprovante .btn { justify-self: start; }
 @media (max-width: 700px) { .comprovante .btn { justify-self: stretch; } }
+
+/* =========================================================
+   Mapa dos pontos
+   ========================================================= */
+
+.mapa {
+  position: relative;
+  z-index: 0;
+  height: min(70vh, 580px);
+  min-height: 380px;
+  border-radius: var(--raio);
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  background: var(--carvao);
+}
+.mapa.leaflet-container { font-family: var(--texto); background: #1d1b18; }
+.mapa__carregando { margin: 0; padding: 40px 20px; text-align: center; color: var(--creme-suave); }
+
+/* deixa as ruas do OpenStreetMap escuras, no clima do site */
+.mapa .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.9) contrast(.85) saturate(.55); }
+
+/* alfinete amarelo com o número do ponto */
+.pino { background: none; border: 0; }
+.pino span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--amarelo);
+  border: 2.5px solid var(--noite);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .45);
+  transition: background-color .2s, transform .2s;
+}
+.pino b {
+  transform: rotate(45deg);
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--noite);
+}
+.pino:hover span, .pino:focus span { background: var(--creme); transform: rotate(-45deg) scale(1.1); }
+
+/* bolinha que junta pontos muito próximos */
+.grupo-pinos { background: none; border: 0; }
+.grupo-pinos span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--noite);
+  border: 3px solid var(--amarelo);
+  box-shadow: 0 0 0 6px rgba(255, 196, 0, .25), 0 6px 16px rgba(0, 0, 0, .45);
+  color: var(--amarelo);
+  line-height: 1;
+}
+.grupo-pinos b { font-family: var(--display); font-weight: 900; font-size: 20px; }
+.grupo-pinos small { font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--creme); margin-top: 1px; }
+
+/* cartãozinho que abre ao tocar no alfinete */
+.popup-ponto .leaflet-popup-content-wrapper {
+  background: var(--carvao);
+  color: var(--creme);
+  border: 1px solid rgba(255, 196, 0, .45);
+  border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, .5);
+}
+.popup-ponto .leaflet-popup-tip { background: var(--carvao); border: 1px solid rgba(255, 196, 0, .45); }
+.popup-ponto .leaflet-popup-content { margin: 16px 18px; font-family: var(--texto); line-height: 1.4; }
+.popup-ponto a.leaflet-popup-close-button { color: var(--creme-suave); font-size: 22px; width: 30px; height: 30px; }
+.popup-ponto a.leaflet-popup-close-button:hover { color: var(--amarelo); }
+.popup-ponto__rotulo { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--amarelo); }
+.popup-ponto__nome {
+  margin-top: 4px;
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 2rem;
+  line-height: .9;
+  text-transform: uppercase;
+}
+.popup-ponto__qtd { margin-top: 6px; font-size: .9rem; color: var(--creme-suave); }
+.popup-ponto__acoes { display: grid; gap: 8px; margin-top: 14px; }
+.popup-ponto .btn { min-height: 42px; font-size: .92rem; padding: 0 16px; }
+.popup-ponto .btn--amarelo, .popup-ponto .btn--amarelo:hover { color: var(--noite); }
+.popup-ponto .btn--fantasma { color: var(--creme); }
+
+/* controles do mapa no tema escuro */
+.mapa .leaflet-bar { border: 1px solid var(--linha); box-shadow: none; }
+.mapa .leaflet-bar a { background: var(--carvao); color: var(--creme); border-bottom-color: var(--linha); }
+.mapa .leaflet-bar a:hover { background: var(--carvao-2); color: var(--amarelo); }
+.mapa .leaflet-control-attribution { background: rgba(14, 13, 11, .8); color: var(--creme-suave); font-size: 11px; }
+.mapa .leaflet-control-attribution a { color: var(--amarelo); }

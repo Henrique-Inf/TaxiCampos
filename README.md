@@ -17,6 +17,17 @@ Todos os dados ficam em **`dados.js`**. Para adicionar um ponto ou um taxista, c
 
 > Os campos `carro` e `foto` ainda estão vazios. Preencha conforme for juntando as informações. Enquanto isso, o site mostra as iniciais no lugar da foto e esconde a linha do carro.
 
+## Mapa dos pontos
+
+O botão **"Ver no mapa"**, ao lado do "Perto de mim", troca a lista pelo mapa. Ele mostra:
+
+- um alfinete amarelo com o número de cada ponto, usando o `lat` e o `lng` de cada um;
+- os pontos muito próximos juntos numa bolinha com a quantidade ("6 pontos"). Tocando nela, o mapa aproxima;
+- ao tocar num alfinete, um cartãozinho com "Ver taxistas" e "Como chegar";
+- com o "Perto de mim" ligado, um ponto azul onde a pessoa está.
+
+O mapa usa o [OpenStreetMap](https://www.openstreetmap.org/copyright), grátis e sem chave, pela biblioteca Leaflet e pelo complemento Leaflet.markercluster, guardados em `vendor/leaflet/`. Eles só são carregados quando alguém abre o mapa.
+
 ## Bairros
 
 Cada ponto tem uma `regiao` no `dados.js`, por exemplo `"regiao": "Capivari"`. O bairro aparece escrito em cada cartão, logo abaixo do "Ponto 01", e a busca também encontra o ponto pelo bairro. Os pontos ficam numa lista única, na ordem dos números.

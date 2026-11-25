@@ -83,6 +83,104 @@
   }
   var temCoords = pontos.some(coordsDe);
   var minhaPosicao = null;
+  var modoMapa = false; // true = pontos mostrados no mapa em vez da lista
+
+  /* ---------- mapa dos pontos (Leaflet + OpenStreetMap) ---------- */
+
+  var mapaAtual = null;
+  var leafletPronto = null;
+
+  function carregarLeaflet() {
+    if (window.L && window.L.markerClusterGroup) return Promise.resolve();
+    if (!leafletPronto) {
+      ["vendor/leaflet/leaflet.css", "vendor/leaflet/MarkerCluster.css"].forEach(function (href) {
+        var css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = href;
+        document.head.appendChild(css);
+      });
+      // o agrupador de alfinetes precisa do Leaflet carregado antes
+      leafletPronto = carregarScript("vendor/leaflet/leaflet.js").then(function () {
+        return carregarScript("vendor/leaflet/leaflet.markercluster.js");
+      });
+    }
+    return leafletPronto;
+  }
+
+  function popupPonto(p) {
+    var qtd = (p.taxistas || []).length;
+    var chegar = linkComoChegar(p);
+    return (
+      '<div class="popup-ponto__rotulo">Ponto ' + esc(p.numero) + (regiaoDe(p) ? " · " + esc(regiaoDe(p)) : "") + "</div>" +
+      '<div class="popup-ponto__nome">' + esc(nomeCurto(p)) + "</div>" +
+      '<div class="popup-ponto__qtd">' + plural(qtd, "taxista", "taxistas") + "</div>" +
+      '<div class="popup-ponto__acoes">' +
+        '<a class="btn btn--amarelo" href="#/ponto/' + encodeURIComponent(p.id) + '">Ver taxistas</a>' +
+        (chegar ? '<a class="btn btn--fantasma" href="' + esc(chegar) + '" target="_blank" rel="noopener">Como chegar</a>' : "") +
+      "</div>"
+    );
+  }
+
+  function desenharMapa(el) {
+    if (mapaAtual) { mapaAtual.remove(); mapaAtual = null; }
+    el.innerHTML = '<p class="mapa__carregando">Carregando mapa…</p>';
+    carregarLeaflet().then(function () {
+      if (!document.body.contains(el)) return; // a tela mudou enquanto carregava
+      el.innerHTML = "";
+      var L = window.L;
+      var mapa = L.map(el, { scrollWheelZoom: false, zoomControl: true });
+      mapaAtual = mapa;
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+      }).addTo(mapa);
+
+      // pontos muito próximos viram uma bolinha com a quantidade; tocando, o mapa aproxima
+      var grupo = L.markerClusterGroup({
+        maxClusterRadius: 38,
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        iconCreateFunction: function (cluster) {
+          var n = cluster.getChildCount();
+          return L.divIcon({
+            className: "grupo-pinos",
+            html: "<span><b>" + n + "</b><small>pontos</small></span>",
+            iconSize: [52, 52]
+          });
+        }
+      });
+      mapa.addLayer(grupo);
+
+      var limites = [];
+      pontos.forEach(function (p) {
+        var c = coordsDe(p);
+        if (!c) return;
+        var icone = L.divIcon({
+          className: "pino",
+          html: "<span><b>" + esc(p.numero) + "</b></span>",
+          iconSize: [34, 34],
+          iconAnchor: [17, 34],
+          popupAnchor: [0, -32]
+        });
+        L.marker([c.lat, c.lng], { icon: icone, title: "Ponto " + p.numero + " · " + nomeCurto(p), alt: nomeCurto(p) })
+          .addTo(grupo)
+          .bindPopup(popupPonto(p), { className: "popup-ponto", maxWidth: 260, minWidth: 210 });
+        limites.push([c.lat, c.lng]);
+      });
+
+      if (minhaPosicao) {
+        L.circleMarker([minhaPosicao.lat, minhaPosicao.lng], {
+          radius: 8, color: "#ffffff", weight: 3, fillColor: "#2F80ED", fillOpacity: 1
+        }).addTo(mapa).bindTooltip("Você está aqui");
+        limites.push([minhaPosicao.lat, minhaPosicao.lng]);
+      }
+
+      if (limites.length) mapa.fitBounds(limites, { padding: [40, 40], maxZoom: 16 });
+      else mapa.setView([-22.733, -45.584], 14);
+    }, function () {
+      el.innerHTML = '<p class="mapa__carregando">Não consegui carregar o mapa. Confira a internet e tente de novo.</p>';
+    });
+  }
   var avisoLocal = "";
 
   function linkComoChegar(p) {
@@ -119,6 +217,10 @@
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg>';
   var ICONE_SETA =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  var ICONE_MAPA =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5L9 4Zm0 0v13.5m6-11v13.5"/></svg>';
+  var ICONE_LISTA =
+    '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
   var ICONE_PINO =
     '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></svg>';
   var ICONE_BUSCA =
@@ -348,6 +450,8 @@
                 '<button type="button" class="filtro filtro--perto" data-regiao="perto" aria-pressed="' + (regiaoAtiva === "perto") + '">' +
                   ICONE_PINO + (regiaoAtiva === "localizando" ? "Localizando…" : "Perto de mim") + "</button>" +
                 '<button type="button" class="filtro" data-regiao="" aria-pressed="' + (regiaoAtiva !== "perto") + '">Todos</button>' +
+                '<button type="button" class="filtro filtro--mapa" data-mapa>' +
+                  (modoMapa ? ICONE_LISTA + "Ver lista" : ICONE_MAPA + "Ver no mapa") + "</button>" +
               "</div>" +
               (avisoLocal ? '<p class="aviso-local">' + esc(avisoLocal) + "</p>" : "")
             : "";
@@ -363,8 +467,14 @@
               return x.d - y.d;
             });
           }
-          resultados.innerHTML = filtros + '<div class="grade-pontos">' +
-            lista.map(function (x) { return cartaoPonto(x.p, x.d); }).join("") + "</div>";
+          if (modoMapa && temCoords) {
+            resultados.innerHTML = filtros +
+              '<div class="mapa" id="mapa-pontos" role="region" aria-label="Mapa dos pontos de táxi"></div>';
+            desenharMapa(document.getElementById("mapa-pontos"));
+          } else {
+            resultados.innerHTML = filtros + '<div class="grade-pontos">' +
+              lista.map(function (x) { return cartaoPonto(x.p, x.d); }).join("") + "</div>";
+          }
         }
         return;
       }
@@ -396,6 +506,13 @@
     resultados.addEventListener("click", function (e) {
       var botao = e.target.closest(".filtro");
       if (!botao) return;
+      if (botao.hasAttribute("data-mapa")) {
+        modoMapa = !modoMapa;
+        render();
+        var secao = document.getElementById("pontos");
+        if (modoMapa && secao) secao.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
       var r = botao.getAttribute("data-regiao");
       avisoLocal = "";
       if (r !== "perto") { regiaoAtiva = r ? r : null; render(); return; }
