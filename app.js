@@ -607,6 +607,17 @@
       "</section>";
   }
 
+  function telaSobre() {
+    document.title = "Sobre nós — TaxiCampos";
+    app.innerHTML =
+      '<section class="topo-simples">' +
+        '<a class="voltar" href="#/">' + ICONE_SETA + "Início</a>" +
+        '<p class="rotulo">Quem somos</p>' +
+        '<h1 class="display topo-simples__titulo">Sobre <span class="amarelo">nós</span></h1>' +
+        '<p class="topo-simples__texto">Em breve, aqui você vai conhecer a história do TaxiCampos e quem está por trás dele.</p>' +
+      "</section>";
+  }
+
   function telaApoiadores() {
     document.title = "Apoiadores — TaxiCampos";
     app.innerHTML =
@@ -820,6 +831,7 @@
     var m = hash.match(/^ponto\/(.+)$/);
     if (m) telaPonto(decodeURIComponent(m[1]));
     else if (hash === "apoiadores") telaApoiadores();
+    else if (hash === "sobre") telaSobre();
     else if (hash === "pagamento") telaPagamento(false);
     else if (hash === "apoiador") telaPagamento(true);
     else telaInicio();
