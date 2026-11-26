@@ -3,6 +3,8 @@
 
   var dados = window.TAXI_DADOS || { pontos: [] };
   var pontos = dados.pontos || [];
+  // taxistas escondidos pelo servidor (inc/opcoes.php): o site mostra só os pontos
+  var ocultos = !!dados.taxistasOcultos;
 
   /* ---------- ordem dos taxistas ----------
    * Toda vez que um ponto é aberto, a lista de taxistas é embaralhada,
@@ -113,9 +115,9 @@
     return (
       '<div class="popup-ponto__rotulo">Ponto ' + esc(p.numero) + (regiaoDe(p) ? " · " + esc(regiaoDe(p)) : "") + "</div>" +
       '<div class="popup-ponto__nome">' + esc(nomeCurto(p)) + "</div>" +
-      '<div class="popup-ponto__qtd">' + plural(qtd, "taxista", "taxistas") + "</div>" +
+      (ocultos ? "" : '<div class="popup-ponto__qtd">' + plural(qtd, "taxista", "taxistas") + "</div>") +
       '<div class="popup-ponto__acoes">' +
-        '<a class="btn btn--amarelo" href="#/ponto/' + encodeURIComponent(p.id) + '">Ver taxistas</a>' +
+        '<a class="btn btn--amarelo" href="#/ponto/' + encodeURIComponent(p.id) + '">' + (ocultos ? "Ver ponto" : "Ver taxistas") + "</a>" +
         (chegar ? '<a class="btn btn--fantasma" href="' + esc(chegar) + '" target="_blank" rel="noopener">Como chegar</a>' : "") +
       "</div>"
     );
@@ -261,7 +263,7 @@
         "<div>" +
           '<h3 class="ponto__nome">' + esc(nomeCurto(ponto)) + "</h3>" +
           '<div class="ponto__rodape">' +
-            "<span>" + plural(qtd, "taxista", "taxistas") + "</span>" +
+            "<span>" + (ocultos ? "Ver ponto" : plural(qtd, "taxista", "taxistas")) + "</span>" +
             '<span class="ponto__seta">' + ICONE_SETA + "</span>" +
           "</div>" +
         "</div>" +
@@ -411,15 +413,18 @@
         '<div class="capa__foto" aria-hidden="true"></div>' +
         '<h1 class="display capa__titulo"><span>Taxi</span><span class="amarelo">Campos</span></h1>' +
         '<div class="capa__rodape">' +
-          '<p class="capa__texto">Os taxistas de ' + esc(dados.cidade || "Campos do Jordão") +
-            ", ponto por ponto. Chame no WhatsApp ou ligue direto.</p>" +
+          (ocultos
+            ? '<p class="capa__texto">Os pontos de táxi de ' + esc(dados.cidade || "Campos do Jordão") +
+              ", com endereço, mapa e o caminho até cada um.</p>"
+            : '<p class="capa__texto">Os taxistas de ' + esc(dados.cidade || "Campos do Jordão") +
+              ", ponto por ponto. Chame no WhatsApp ou ligue direto.</p>") +
           '<div class="capa__acoes">' +
             '<a class="btn btn--amarelo" href="#/" data-rolar="pontos">Ver os pontos ' + ICONE_SETA + "</a>" +
-            '<a class="btn btn--fantasma" href="#/" data-rolar="busca">Buscar taxista</a>' +
+            '<a class="btn btn--fantasma" href="#/" data-rolar="busca">' + (ocultos ? "Buscar ponto" : "Buscar taxista") + "</a>" +
           "</div>" +
         "</div>" +
-        '<p class="capa__dica">' + plural(pontos.length, "ponto", "pontos") + " · " +
-          plural(totalTaxistas, "taxista", "taxistas") + "</p>" +
+        '<p class="capa__dica">' + plural(pontos.length, "ponto", "pontos") +
+          (ocultos ? "" : " · " + plural(totalTaxistas, "taxista", "taxistas")) + "</p>" +
       "</section>" +
 
       '<div class="xadrez" aria-hidden="true"></div>' +
@@ -430,7 +435,7 @@
           '<div class="busca">' +
             ICONE_BUSCA +
             '<label for="busca" class="sr-only">Buscar ponto, bairro, taxista ou carro</label>' +
-            '<input id="busca" type="search" placeholder="Buscar ponto, bairro ou taxista" autocomplete="off">' +
+            '<input id="busca" type="search" placeholder="' + (ocultos ? "Buscar ponto ou bairro" : "Buscar ponto, bairro ou taxista") + '" autocomplete="off">' +
           "</div>" +
         "</div>" +
         '<div id="resultados"></div>' +
@@ -447,8 +452,11 @@
         '<p class="manifesto">Taxistas licenciados, regularizados e experientes, que conhecem cada canto da cidade. Não precisa de aplicativo nem cadastro, é só chamar.</p>' +
         '<ol class="passos">' +
           "<li><b>1</b><h3>Escolha o ponto</h3><p>Veja os pontos de táxi da cidade e abra o mais perto de onde você está.</p></li>" +
-          "<li><b>2</b><h3>Escolha o taxista</h3><p>Cada ponto mostra os taxistas que trabalham ali, com nome e telefone.</p></li>" +
-          "<li><b>3</b><h3>Chame</h3><p>Toque no WhatsApp e a mensagem já vai pronta. Ou ligue direto.</p></li>" +
+          (ocultos
+            ? "<li><b>2</b><h3>Veja no mapa</h3><p>Toque em “Ver no mapa” para achar o ponto mais perto de você.</p></li>" +
+              "<li><b>3</b><h3>Vá até lá</h3><p>Toque em “Como chegar” e siga o caminho pelo mapa do celular.</p></li>"
+            : "<li><b>2</b><h3>Escolha o taxista</h3><p>Cada ponto mostra os taxistas que trabalham ali, com nome e telefone.</p></li>" +
+              "<li><b>3</b><h3>Chame</h3><p>Toque no WhatsApp e a mensagem já vai pronta. Ou ligue direto.</p></li>") +
         "</ol>" +
       "</section>";
 
@@ -576,7 +584,7 @@
         "</p>" +
         '<h1 class="display topo-ponto__nome">' + esc(nomeCurto(ponto)) + "</h1>" +
         '<div class="topo-ponto__info">' +
-          "<span><strong>" + plural(taxistas.length, "taxista", "taxistas") + "</strong></span>" +
+          (ocultos ? "" : "<span><strong>" + plural(taxistas.length, "taxista", "taxistas") + "</strong></span>") +
           (ponto.endereco ? "<span>" + esc(ponto.endereco) + "</span>" : "") +
           (linkComoChegar(ponto)
             ? '<a class="btn btn--fantasma" href="' + esc(linkComoChegar(ponto)) + '" target="_blank" rel="noopener">' +
@@ -590,7 +598,9 @@
       "</section>" +
       '<div class="xadrez xadrez--fina" aria-hidden="true"></div>' +
       '<section class="secao">' +
-        (taxistas.length
+        (ocultos
+          ? '<p class="vazio">Os contatos dos taxistas deste ponto estão sendo atualizados e voltam em breve.</p>'
+          : taxistas.length
           ? '<div class="grade-taxistas">' +
             taxistas.map(function (t) { return cartaoTaxista(t, ponto, false); }).join("") + "</div>"
           : '<p class="vazio">Nenhum taxista cadastrado neste ponto.</p>') +
@@ -741,6 +751,10 @@
             ? "<p>Escreva o nome da sua empresa e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
               '<label for="quem" class="sr-only">Nome da empresa</label>' +
               '<input id="quem" type="text" placeholder="Nome da empresa" autocomplete="organization" maxlength="80">'
+            : ocultos
+            ? "<p>Escreva seu nome e seu ponto e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
+              '<label for="quem" class="sr-only">Seu nome e ponto</label>' +
+              '<input id="quem" type="text" placeholder="Seu nome e ponto" autocomplete="name" maxlength="80">'
             : "<p>Escolha seu nome e envie o comprovante pelo WhatsApp. Assim a gente sabe quem pagou.</p>" +
               '<label for="quem" class="sr-only">Seu nome</label>' +
               '<select id="quem">' + opcoes + "</select>") +
@@ -766,7 +780,7 @@
       var avisoC = document.getElementById("aviso-comprovante");
       if (!escolha) {
         avisoC.classList.add("alerta");
-        avisar(avisoC, paraApoiador ? "Escreva o nome da sua empresa." : "Escolha seu nome na lista.");
+        avisar(avisoC, paraApoiador ? "Escreva o nome da sua empresa." : ocultos ? "Escreva seu nome e seu ponto." : "Escolha seu nome na lista.");
         return;
       }
       avisoC.textContent = "";
@@ -778,7 +792,8 @@
       } else {
         var partes = escolha.split("|");
         msg = "Olá! Paguei a mensalidade do TaxiCampos (" + valorTexto + ").\n" +
-          "Taxista: " + partes[0] + "\nPonto: " + partes[1] + "\nSegue o comprovante:";
+          (ocultos ? "Taxista e ponto: " + escolha : "Taxista: " + partes[0] + "\nPonto: " + partes[1]) +
+          "\nSegue o comprovante:";
       }
       window.open("https://wa.me/" + numero + "?text=" + encodeURIComponent(msg), "_blank", "noopener");
     });
