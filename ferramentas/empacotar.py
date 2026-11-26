@@ -14,7 +14,7 @@ import os, secrets, sys, zipfile, pathlib
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
 DIST = RAIZ / "dist"
-FORA = {".git", "dist", "ferramentas", "README.md", "instalar.php", ".gitignore", "inc/config.php"}
+FORA = {".git", "dist", "ferramentas", "README.md", ".gitignore", "inc/config.php"}
 
 def incluir(rel: str) -> bool:
     partes = rel.split("/")
@@ -43,7 +43,7 @@ def main():
             z.writestr(pasta, "")
 
     token = secrets.token_urlsafe(24)
-    instalador = (RAIZ / "instalar.php").read_text(encoding="utf-8")
+    instalador = (RAIZ / "ferramentas" / "instalar.php").read_text(encoding="utf-8")
     marca = "const TOKEN_INSTALACAO = '__TOKEN_INSTALACAO__';"
     if marca not in instalador:
         sys.exit("Não achei a linha do token em instalar.php")

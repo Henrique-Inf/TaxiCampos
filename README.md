@@ -27,7 +27,7 @@ Versão em **PHP + MySQL**: pontos, taxistas, apoiadores e configurações ficam
 | `inc/dados.php` | Lê pontos, taxistas, apoiadores e configurações do banco |
 | `inc/estrutura.sql` | Tabelas do banco |
 | `inc/dados-iniciais.json` | Dados importados na instalação (9 pontos, 67 taxistas, 1 apoiador) |
-| `inc/instalacao.php`, `instalar.php` | Instalador. Funciona pelo pacote (com código) ou direto do GitHub pelo Git da Hostinger: aí só aceita banco `localhost` com nome e usuário da própria conta (`u123456789_...`) |
+| `inc/instalacao.php`, `ferramentas/instalar.php` | Instalador. Funciona pelo pacote (com código) ou direto do GitHub pelo Git da Hostinger: aí só aceita banco `localhost` com nome e usuário da própria conta (`u123456789_...`) |
 | `inc/config.php` | **Senha do banco.** Criado pelo instalador e **fora do Git** |
 | `ferramentas/empacotar.py` | Gera o pacote de instalação |
 | `fontes/`, `icones/`, `vendor/` | Fontes (OFL), ícones, gerador de QR Code (MIT) e mapa: Leaflet (BSD-2) e Leaflet.markercluster (MIT), dados © colaboradores do OpenStreetMap |
