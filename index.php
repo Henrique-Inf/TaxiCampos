@@ -45,12 +45,14 @@ header('Content-Type: text/html; charset=utf-8');
   <meta name="apple-mobile-web-app-title" content="TaxiCampos">
 
   <!-- Prévia ao compartilhar o link (WhatsApp, Facebook, Instagram...) -->
+  <link rel="canonical" href="https://taxicampos.com.br/">
+  <meta property="og:url" content="https://taxicampos.com.br/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
   <meta property="og:site_name" content="TaxiCampos">
   <meta property="og:title" content="TaxiCampos — Táxi em Campos do Jordão">
   <meta property="og:description" content="Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/Henrique-Inf/TaxiCampos/main/icones/compartilhar.png">
+  <meta property="og:image" content="https://taxicampos.com.br/icones/compartilhar.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="TaxiCampos: táxi em Campos do Jordão, com botões de WhatsApp e Ligar">
