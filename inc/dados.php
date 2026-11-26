@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/opcoes.php';
 
 function taxi_configuracoes(PDO $pdo): array
 {
@@ -53,7 +54,8 @@ function taxi_carregar_dados(PDO $pdo): array
 
     $sql = 'SELECT ponto_id, nome, carro, telefone, whatsapp, foto
               FROM taxistas WHERE ativo = 1 ORDER BY ponto_id, ordem, id';
-    foreach ($pdo->query($sql) as $t) {
+    // com os taxistas escondidos, a consulta nem é feita: nada deles vai para a página
+    foreach (TAXI_MOSTRAR_TAXISTAS ? $pdo->query($sql) : [] as $t) {
         $i = $porId[(int)$t['ponto_id']] ?? null;
         if ($i === null) {
             continue; // taxista de ponto desativado
@@ -84,6 +86,7 @@ function taxi_carregar_dados(PDO $pdo): array
         'pagamento'         => $cfg['pagamento'] ?? new stdClass(),
         'pagamentoApoiador' => $cfg['pagamentoApoiador'] ?? new stdClass(),
         'contatoApoio'      => $cfg['contatoApoio'] ?? new stdClass(),
+        'taxistasOcultos'   => !TAXI_MOSTRAR_TAXISTAS,
         'pontos'            => $pontos,
         'apoiadores'        => $apoiadores,
     ];

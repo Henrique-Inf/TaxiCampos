@@ -60,6 +60,10 @@ O instalador descompacta o site, grava o `inc/config.php`, cria as tabelas, impo
 
 PHP 8.0 ou mais novo, com PDO MySQL e ZipArchive, MySQL 5.7+ ou MariaDB 10.3+, e Apache com `.htaccess`.
 
+## Esconder ou mostrar os taxistas
+
+Em `inc/opcoes.php`, `TAXI_MOSTRAR_TAXISTAS = false` mostra só os pontos: nome e telefone dos taxistas nem saem do servidor, mas continuam guardados no banco. Troque para `true` e publique para mostrar de novo.
+
 ## Créditos
 
 - Fontes: [Big Shoulders Display](https://fonts.google.com/specimen/Big+Shoulders+Display) e [Schibsted Grotesk](https://fonts.google.com/specimen/Schibsted+Grotesk) (SIL Open Font License).
