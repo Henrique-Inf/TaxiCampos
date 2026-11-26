@@ -6,6 +6,9 @@ DirectoryIndex index.php
 # Não listar o conteúdo das pastas
 Options -Indexes
 
+# Pastas do Git e ferramentas de desenvolvimento não ficam visíveis
+RedirectMatch 404 ^/(\.git|ferramentas)(/|$)
+
 # Bloqueia arquivos que não devem ser abertos pelo navegador
 <FilesMatch "(^\.|\.(sql|md|json|token|zip|log|bak)$)">
   <IfModule mod_authz_core.c>

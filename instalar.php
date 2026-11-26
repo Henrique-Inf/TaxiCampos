@@ -13,8 +13,11 @@
  *  O instalador descompacta o site, grava inc/config.php, cria as
  *  tabelas, importa pontos/taxistas/apoiadores e depois se apaga.
  *
- *  Na versão do GitHub o token não existe (__TOKEN_INSTALACAO__):
- *  o instalador só funciona no pacote gerado para instalar.
+ *  Instalação direto do GitHub (Git da Hostinger), sem pacote:
+ *  sem token, o instalador só aceita um banco no próprio servidor
+ *  (localhost) cujo nome e usuário comecem com o usuário da conta
+ *  de hospedagem (ex.: u123456789_taxicampos). Assim ninguém de fora
+ *  consegue apontar o site para um banco dele.
  */
 
 declare(strict_types=1);
@@ -54,16 +57,41 @@ function pagina(string $titulo, string $corpo): void
     exit;
 }
 
-/* ---------- 1. Token ---------- */
+/* ---------- 1. Token ou conta de hospedagem ---------- */
 
-if (TOKEN_INSTALACAO === '__TOKEN' . '_INSTALACAO__') {
+/* Usuário da conta de hospedagem (ex.: u123456789), se der para ter certeza dele */
+function prefixo_conta(): ?string
+{
+    $nome = '';
+    if (function_exists('posix_geteuid') && function_exists('posix_getpwuid')) {
+        $info = posix_getpwuid(posix_geteuid());
+        $nome = is_array($info) ? (string)($info['name'] ?? '') : '';
+    }
+    if ($nome === '') {
+        $nome = (string)get_current_user();
+    }
+    $genericos = ['root', 'www-data', 'apache', 'nobody', 'daemon', 'nginx', 'http', 'litespeed', 'lsadm'];
+    if (!preg_match('/^[a-z][a-z0-9]{2,31}$/', $nome) || in_array($nome, $genericos, true)) {
+        return null;
+    }
+    // o site precisa estar dentro da pasta da própria conta
+    if (!str_contains(str_replace('\\', '/', __DIR__) . '/', '/' . $nome . '/')) {
+        return null;
+    }
+    return $nome;
+}
+
+$modoPacote = TOKEN_INSTALACAO !== '__TOKEN' . '_INSTALACAO__';
+$prefixo = $modoPacote ? null : prefixo_conta();
+
+if (!$modoPacote && $prefixo === null) {
     http_response_code(403);
-    pagina('Instalador', '<h1>Insta<span>lador</span></h1><p class="sub">Este é o instalador do repositório. '
+    pagina('Instalador', '<h1>Insta<span>lador</span></h1><p class="sub">Não consegui identificar a conta de hospedagem. '
         . 'Use o arquivo <code>instalar.php</code> que vem no pacote de instalação.</p>');
 }
 
 $token = (string)($_GET['token'] ?? $_POST['token'] ?? '');
-if (!hash_equals(TOKEN_INSTALACAO, $token)) {
+if ($modoPacote && !hash_equals(TOKEN_INSTALACAO, $token)) {
     http_response_code(403);
     pagina('Acesso negado', '<h1>Acesso <span>negado</span></h1><p class="sub">Abra este endereço com o código de instalação: '
         . '<code>instalar.php?token=...</code></p>');
@@ -121,7 +149,9 @@ if (empty($_SESSION['csrf'])) {
 }
 
 $erro = '';
-$valores = ['db_host' => '', 'db_nome' => '', 'db_usuario' => '', 'db_porta' => '3306'];
+$valores = $prefixo === null
+    ? ['db_host' => '', 'db_nome' => '', 'db_usuario' => '', 'db_porta' => '3306']
+    : ['db_host' => 'localhost', 'db_nome' => $prefixo . '_', 'db_usuario' => $prefixo . '_', 'db_porta' => '3306'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($valores as $k => $v) {
@@ -133,6 +163,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erro = 'O formulário expirou. Recarregue a página e tente de novo.';
     } elseif ($valores['db_host'] === '' || $valores['db_nome'] === '' || $valores['db_usuario'] === '') {
         $erro = 'Preencha o servidor, o nome do banco e o usuário.';
+    } elseif ($prefixo !== null && (
+        !in_array(strtolower($valores['db_host']), ['localhost', '127.0.0.1'], true)
+        || !str_starts_with($valores['db_nome'], $prefixo . '_') || strlen($valores['db_nome']) <= strlen($prefixo) + 1
+        || !str_starts_with($valores['db_usuario'], $prefixo . '_') || strlen($valores['db_usuario']) <= strlen($prefixo) + 1
+    )) {
+        $erro = 'Use um banco desta hospedagem: servidor localhost, e nome e usuário começando com ' . $prefixo . '_';
     } else {
         $config = $valores + ['db_senha' => $senha];
         try {
@@ -173,16 +209,16 @@ $campos = function (string $nome, string $rotulo, string $dica, string $tipo = '
 };
 
 pagina('Instalar', '<h1>Instalar o <span>TaxiCampos</span></h1>'
-    . '<p class="sub">Copie os dados do banco que aparecem no painel da hospedagem, em <strong>MySQL Databases</strong>.</p>'
+    . '<p class="sub">Copie os dados do banco que aparecem no painel da hospedagem, em <strong>Bancos de dados MySQL</strong>.</p>'
     . implode('', array_map(fn($a) => '<div class="ok">' . h($a) . '</div>', $avisos))
     . ($erro ? '<div class="erro">' . h($erro) . '</div>' : '')
     . '<form method="post" class="cartao">'
     . '<input type="hidden" name="csrf" value="' . h($_SESSION['csrf']) . '">'
     . '<input type="hidden" name="token" value="' . h($token) . '">'
-    . $campos('db_host', 'Servidor do banco', 'MySQL Hostname, ex.: sql123.infinityfree.com')
-    . $campos('db_nome', 'Nome do banco', 'MySQL Database Name, ex.: if0_12345678_taxicampos')
-    . $campos('db_usuario', 'Usuário do banco', 'MySQL Username, ex.: if0_12345678')
-    . $campos('db_senha', 'Senha do banco', 'MySQL Password (a mesma senha da conta de hospedagem)', 'password')
+    . $campos('db_host', 'Servidor do banco', 'Na Hostinger é localhost')
+    . $campos('db_nome', 'Nome do banco', 'Ex.: u123456789_taxicampos')
+    . $campos('db_usuario', 'Usuário do banco', 'Ex.: u123456789_taxicampos')
+    . $campos('db_senha', 'Senha do banco', 'A senha que você escolheu ao criar o banco', 'password')
     . $campos('db_porta', 'Porta', 'Deixe 3306, a não ser que o painel mostre outra')
     . '<button type="submit">Instalar</button>'
     . '</form>');
