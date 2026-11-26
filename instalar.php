@@ -134,7 +134,9 @@ require __DIR__ . '/inc/instalacao.php';
 
 /* ---------- 3. Já instalado? ---------- */
 
-if (taxi_esta_instalado()) {
+// com o inc/config.php no lugar, o instalador nunca mais mostra o formulário
+// (nem se o banco estiver fora do ar por um instante)
+if (is_file(TAXI_CONFIG) || taxi_esta_instalado()) {
     @unlink(PACOTE_SITE);
     $apagou = @unlink(__FILE__);
     pagina('Já instalado', '<h1>Já está <span>instalado</span></h1><div class="ok">O TaxiCampos já está funcionando.</div>'
