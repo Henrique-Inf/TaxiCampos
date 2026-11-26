@@ -69,6 +69,7 @@ header('Content-Type: text/html; charset=utf-8');
       <span class="nav__ponto" aria-hidden="true"></span>TaxiCampos
     </a>
     <nav class="nav__links">
+      <a href="#/sobre" class="nav__link">Sobre nós</a>
       <a href="#/apoiadores" class="nav__link">Apoiadores</a>
       <a href="#/" class="nav__botao" data-rolar="pontos">Pontos</a>
     </nav>
