@@ -1186,3 +1186,16 @@ a.rodape__logo.vaga:hover { border-style: solid; border-color: var(--amarelo); c
 .mapa .leaflet-bar a:hover { background: var(--carvao-2); color: var(--amarelo); }
 .mapa .leaflet-control-attribution { background: rgba(14, 13, 11, .8); color: var(--creme-suave); font-size: 11px; }
 .mapa .leaflet-control-attribution a { color: var(--amarelo); }
+
+/* Texto para buscadores, visível só enquanto o site carrega ou sem JavaScript */
+.sem-js { padding: 120px var(--margem) 60px; max-width: 760px; }
+.sem-js h1 { font-family: var(--display); font-weight: 900; text-transform: uppercase; font-size: clamp(2.4rem, 8vw, 4.5rem); line-height: .95; margin: 0 0 16px; }
+.sem-js h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 1.6rem; margin: 32px 0 10px; color: var(--amarelo); }
+.sem-js li { margin: 6px 0; }
+.sem-js a { color: var(--creme); }
+
+/* Sobre nós */
+.sobre { padding: 0 var(--margem) 72px; max-width: 760px; }
+.sobre p { font-size: 1.08rem; line-height: 1.65; color: var(--creme); margin: 0 0 18px; }
+.sobre .btn { margin-top: 10px; }
+.topo-simples__texto--destaque { color: var(--creme); font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.45; max-width: 640px; }

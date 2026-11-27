@@ -614,7 +614,14 @@
         '<a class="voltar" href="#/">' + ICONE_SETA + "Início</a>" +
         '<p class="rotulo">Quem somos</p>' +
         '<h1 class="display topo-simples__titulo">Sobre <span class="amarelo">nós</span></h1>' +
-        '<p class="topo-simples__texto">Em breve, aqui você vai conhecer a história do TaxiCampos e quem está por trás dele.</p>' +
+        '<p class="topo-simples__texto topo-simples__texto--destaque">Somos uma empresa de Campos do Jordão focada em facilitar o acesso ao táxi na cidade.</p>' +
+      "</section>" +
+      '<section class="sobre">' +
+        "<p>O TaxiCampos reúne em um só lugar os pontos de táxi de Campos do Jordão, da Abernéssia ao Capivari, " +
+          "com endereço, mapa e o caminho até cada um.</p>" +
+        "<p>Nosso objetivo é ajudar moradores e turistas a encontrar um táxi de forma rápida e simples, sem aplicativo nem cadastro, " +
+          "e valorizar o trabalho dos taxistas da cidade: profissionais licenciados, regularizados e que conhecem cada canto da serra.</p>" +
+        '<a class="btn btn--amarelo" href="#/" data-rolar="pontos">Ver os pontos ' + ICONE_SETA + "</a>" +
       "</section>";
   }
 
