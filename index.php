@@ -9,7 +9,8 @@ declare(strict_types=1);
 require __DIR__ . '/inc/dados.php';
 
 try {
-    $json = taxi_json_script(taxi_carregar_dados(taxi_db()));
+    $dados = taxi_carregar_dados(taxi_db());
+    $json = taxi_json_script($dados);
 } catch (Throwable $e) {
     error_log('TaxiCampos: ' . $e->getMessage());
     http_response_code(503);
@@ -27,6 +28,59 @@ try {
     exit;
 }
 
+/* ---------- Para o Google (busca) ---------- */
+
+$h = static fn($t) => htmlspecialchars((string)$t, ENT_QUOTES, 'UTF-8');
+$site = 'https://taxicampos.com.br/';
+$cidade = (string)($dados['cidade'] ?? 'Campos do Jordão');
+$pontosSeo = $dados['pontos'] ?? [];
+$ocultos = !empty($dados['taxistasOcultos']);
+$bairros = array_values(array_unique(array_filter(array_map(fn($p) => $p['regiao'] ?? '', $pontosSeo))));
+$listaBairros = count($bairros) > 1
+    ? implode(', ', array_slice($bairros, 0, -1)) . ' e ' . end($bairros)
+    : implode('', $bairros);
+// "Ponto Avenida" → "Avenida"
+$semPonto = static fn($nome) => preg_replace('/^ponto\s+/iu', '', (string)$nome);
+
+$descricao = $ocultos
+    ? "Táxi em $cidade: os " . count($pontosSeo) . " pontos de táxi da cidade ($listaBairros), "
+      . "com endereço, mapa e como chegar."
+    : "Táxi em $cidade: os taxistas de cada ponto de táxi da cidade. Chame no WhatsApp ou ligue direto.";
+
+// Dados estruturados (schema.org): o site e cada ponto de táxi com endereço e localização
+$estruturado = [
+    '@context' => 'https://schema.org',
+    '@graph'   => array_merge(
+        [[
+            '@type' => 'WebSite',
+            'name'  => 'TaxiCampos',
+            'url'   => $site,
+            'inLanguage' => 'pt-BR',
+            'description' => $descricao,
+        ]],
+        array_map(static function ($p) use ($site, $cidade, $semPonto) {
+            $item = [
+                '@type' => 'TaxiStand',
+                'name'  => 'Ponto de táxi ' . $semPonto($p['nome']) . ' — ' . $p['regiao'] . ', ' . $cidade,
+                'url'   => $site . '#/ponto/' . rawurlencode((string)$p['id']),
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'streetAddress'   => (string)$p['endereco'],
+                    'addressLocality' => $cidade,
+                    'addressRegion'   => 'SP',
+                    'addressCountry'  => 'BR',
+                ],
+            ];
+            if ($p['lat'] !== '' && $p['lng'] !== '') {
+                $item['geo'] = ['@type' => 'GeoCoordinates', 'latitude' => (float)$p['lat'], 'longitude' => (float)$p['lng']];
+            }
+            return $item;
+        }, $pontosSeo)
+    ),
+];
+$estruturadoJson = json_encode($estruturado,
+    JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
 header_remove('X-Powered-By');
 header('Content-Type: text/html; charset=utf-8');
 ?><!DOCTYPE html>
@@ -34,7 +88,7 @@ header('Content-Type: text/html; charset=utf-8');
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.">
+  <meta name="description" content="<?= $h($descricao) ?>">
   <meta name="theme-color" content="#0E0D0B">
   <title>TaxiCampos — Táxi em Campos do Jordão</title>
   <link rel="icon" type="image/png" href="icones/favicon-64.png">
@@ -52,7 +106,7 @@ header('Content-Type: text/html; charset=utf-8');
   <meta property="og:locale" content="pt_BR">
   <meta property="og:site_name" content="TaxiCampos">
   <meta property="og:title" content="TaxiCampos — Táxi em Campos do Jordão">
-  <meta property="og:description" content="Os taxistas de Campos do Jordão, ponto por ponto. Chame no WhatsApp ou ligue direto.">
+  <meta property="og:description" content="<?= $h($descricao) ?>">
   <meta property="og:image" content="https://taxicampos.com.br/icones/compartilhar.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -62,6 +116,7 @@ header('Content-Type: text/html; charset=utf-8');
   <link rel="preload" href="fontes/schibsted-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link rel="stylesheet" href="estilo.css">
+  <script type="application/ld+json"><?= $estruturadoJson ?></script>
 </head>
 <body>
   <header class="nav">
@@ -75,7 +130,20 @@ header('Content-Type: text/html; charset=utf-8');
     </nav>
   </header>
 
-  <main id="app" aria-live="polite"></main>
+  <main id="app" aria-live="polite">
+    <!-- Versão em texto para buscadores e para quem está sem JavaScript; o app.js troca pelo site completo -->
+    <section class="sem-js">
+      <h1>Táxi em <?= $h($cidade) ?></h1>
+      <p><?= $h($descricao) ?></p>
+      <h2>Pontos de táxi em <?= $h($cidade) ?></h2>
+      <ul>
+        <?php foreach ($pontosSeo as $p): ?>
+        <li><a href="#/ponto/<?= $h(rawurlencode((string)$p['id'])) ?>">Ponto <?= $h($p['numero']) ?> — <?= $h($semPonto($p['nome'])) ?></a>,
+          <?= $h($p['regiao']) ?><?= $p['endereco'] !== '' ? ' — ' . $h($p['endereco']) : '' ?></li>
+        <?php endforeach; ?>
+      </ul>
+    </section>
+  </main>
 
   <footer class="rodape" id="rodape" aria-label="Apoiadores"></footer>
 
