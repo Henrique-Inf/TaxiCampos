@@ -1193,3 +1193,9 @@ a.rodape__logo.vaga:hover { border-style: solid; border-color: var(--amarelo); c
 .sem-js h2 { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 1.6rem; margin: 32px 0 10px; color: var(--amarelo); }
 .sem-js li { margin: 6px 0; }
 .sem-js a { color: var(--creme); }
+
+/* Sobre nós */
+.sobre { padding: 0 var(--margem) 72px; max-width: 760px; }
+.sobre p { font-size: 1.08rem; line-height: 1.65; color: var(--creme); margin: 0 0 18px; }
+.sobre .btn { margin-top: 10px; }
+.topo-simples__texto--destaque { color: var(--creme); font-size: clamp(1.2rem, 2.6vw, 1.5rem); line-height: 1.45; max-width: 640px; }
